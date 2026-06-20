@@ -55,11 +55,14 @@ class Employee(Base):
     phone = Column(String(50), nullable=True)
     email = Column(String(255), nullable=True)
     hourly_rate = Column(Float, nullable=True)
+    pin = Column(String(50), nullable=True)
     is_active = Column(String(1), default="Y")
     created_at = Column(DateTime, default=datetime.utcnow)
 
     time_entries = relationship("TimeEntry", back_populates="employee")
     assigned_jobs = relationship("Job", back_populates="technician")
+    photos = relationship("Photo", back_populates="employee")
+    documents = relationship("Document", back_populates="employee")
 
 
 class Job(Base):
@@ -86,6 +89,7 @@ class Job(Base):
     technician = relationship("Employee", back_populates="assigned_jobs")
     time_entries = relationship("TimeEntry", back_populates="job")
     invoices = relationship("Invoice", back_populates="job")
+    photos = relationship("Photo", back_populates="job")
 
 
 class Estimate(Base):
@@ -147,6 +151,26 @@ class TimeEntry(Base):
     job = relationship("Job", back_populates="time_entries")
 
 
+class PhotoCategory(str, enum.Enum):
+    BEFORE = "before"
+    AFTER = "after"
+    PLUMBING = "plumbing"
+    ELECTRICAL = "electrical"
+    HVAC = "hvac"
+    GENERAL = "general"
+
+
+class DocumentType(str, enum.Enum):
+    PAYSTUB = "paystub"
+    TAX = "tax"
+    OTHER = "other"
+
+
+class EmployeeRole(str, enum.Enum):
+    WORKER = "worker"
+    ADMIN = "admin"
+
+
 class Lead(Base):
     __tablename__ = "leads"
 
@@ -164,3 +188,33 @@ class Lead(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
     converted_customer = relationship("Customer")
+
+
+class Photo(Base):
+    __tablename__ = "photos"
+
+    id = Column(Integer, primary_key=True, index=True)
+    job_id = Column(Integer, ForeignKey("jobs.id"), nullable=True)
+    employee_id = Column(Integer, ForeignKey("employees.id"), nullable=False)
+    url = Column(String(500), nullable=False)
+    title = Column(String(255), nullable=True)
+    category = Column(String(50), default=PhotoCategory.GENERAL.value)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    job = relationship("Job", back_populates="photos")
+    employee = relationship("Employee", back_populates="photos")
+
+
+class Document(Base):
+    __tablename__ = "documents"
+
+    id = Column(Integer, primary_key=True, index=True)
+    employee_id = Column(Integer, ForeignKey("employees.id"), nullable=False)
+    type = Column(String(50), default=DocumentType.OTHER.value)
+    title = Column(String(255), nullable=False)
+    file_url = Column(String(500), nullable=True)
+    period_start = Column(DateTime, nullable=True)
+    period_end = Column(DateTime, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    employee = relationship("Employee", back_populates="documents")

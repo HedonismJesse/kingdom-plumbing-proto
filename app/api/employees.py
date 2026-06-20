@@ -25,3 +25,11 @@ def get_employee(employee_id: int, db: Session = Depends(get_db)):
 @router.post("/", response_model=schemas.EmployeeOut)
 def create_employee(payload: schemas.EmployeeCreate, db: Session = Depends(get_db)):
     return crud.create_employee(db, payload.model_dump())
+
+
+@router.post("/{employee_id}/login")
+def employee_login(employee_id: int, pin: str, db: Session = Depends(get_db)):
+    employee = crud.get_employee_by_pin(db, employee_id, pin)
+    if not employee:
+        raise HTTPException(status_code=401, detail="Invalid PIN")
+    return {"success": True, "employee_id": employee.id, "name": employee.name, "role": employee.role}

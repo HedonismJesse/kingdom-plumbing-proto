@@ -172,3 +172,58 @@ def clock_out(db: Session, entry_id: int, hours: Optional[float] = None):
         db.commit()
         db.refresh(db_entry)
     return db_entry
+
+
+# Photos
+
+def get_photo(db: Session, photo_id: int):
+    return db.query(models.Photo).filter(models.Photo.id == photo_id).first()
+
+
+def get_photos(db: Session, skip: int = 0, limit: int = 100, job_id: Optional[int] = None, employee_id: Optional[int] = None):
+    query = db.query(models.Photo).order_by(models.Photo.created_at.desc())
+    if job_id:
+        query = query.filter(models.Photo.job_id == job_id)
+    if employee_id:
+        query = query.filter(models.Photo.employee_id == employee_id)
+    return query.offset(skip).limit(limit).all()
+
+
+def create_photo(db: Session, photo: dict):
+    db_photo = models.Photo(**photo)
+    db.add(db_photo)
+    db.commit()
+    db.refresh(db_photo)
+    return db_photo
+
+
+# Documents
+
+def get_document(db: Session, document_id: int):
+    return db.query(models.Document).filter(models.Document.id == document_id).first()
+
+
+def get_documents(db: Session, skip: int = 0, limit: int = 100, employee_id: Optional[int] = None, type: Optional[str] = None):
+    query = db.query(models.Document).order_by(models.Document.created_at.desc())
+    if employee_id:
+        query = query.filter(models.Document.employee_id == employee_id)
+    if type:
+        query = query.filter(models.Document.type == type)
+    return query.offset(skip).limit(limit).all()
+
+
+def create_document(db: Session, document: dict):
+    db_doc = models.Document(**document)
+    db.add(db_doc)
+    db.commit()
+    db.refresh(db_doc)
+    return db_doc
+
+
+# Auth
+
+def get_employee_by_pin(db: Session, employee_id: int, pin: str):
+    return db.query(models.Employee).filter(
+        models.Employee.id == employee_id,
+        models.Employee.pin == pin
+    ).first()

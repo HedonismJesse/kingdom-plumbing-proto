@@ -56,6 +56,7 @@ class EmployeeBase(BaseModel):
     phone: Optional[str] = None
     email: Optional[str] = None
     hourly_rate: Optional[float] = None
+    pin: Optional[str] = None
 
 
 class EmployeeCreate(EmployeeBase):
@@ -168,6 +169,47 @@ class TimeEntryCreate(TimeEntryBase):
 
 
 class TimeEntryOut(TimeEntryBase):
+    id: int
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class PhotoBase(BaseModel):
+    job_id: Optional[int] = None
+    employee_id: int
+    url: str
+    title: Optional[str] = None
+    category: Optional[str] = "general"
+
+
+class PhotoCreate(PhotoBase):
+    pass
+
+
+class PhotoOut(PhotoBase):
+    id: int
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class DocumentBase(BaseModel):
+    employee_id: int
+    type: Optional[str] = "other"
+    title: str
+    file_url: Optional[str] = None
+    period_start: Optional[datetime] = None
+    period_end: Optional[datetime] = None
+
+
+class DocumentCreate(DocumentBase):
+    pass
+
+
+class DocumentOut(DocumentBase):
     id: int
     created_at: datetime
 
