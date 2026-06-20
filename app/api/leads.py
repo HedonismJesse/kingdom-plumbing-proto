@@ -33,3 +33,19 @@ def convert_lead(lead_id: int, customer_id: int, db: Session = Depends(get_db)):
     if not lead:
         raise HTTPException(status_code=404, detail="Lead not found")
     return lead
+
+
+@router.post("/{lead_id}/convert", response_model=schemas.LeadOut)
+def convert_lead_auto(lead_id: int, db: Session = Depends(get_db)):
+    lead = crud.get_lead(db, lead_id)
+    if not lead:
+        raise HTTPException(status_code=404, detail="Lead not found")
+    customer = crud.create_customer(db, {
+        "name": lead.name,
+        "phone": lead.phone,
+        "email": lead.email,
+        "address": lead.address,
+        "notes": lead.description or lead.notes
+    })
+    lead = crud.update_lead_status(db, lead_id, "converted", customer.id)
+    return lead

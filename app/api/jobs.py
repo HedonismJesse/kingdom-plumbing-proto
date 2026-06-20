@@ -1,10 +1,11 @@
 from typing import List
+from datetime import datetime
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-from app import crud, schemas
+from app import crud, schemas, models
 
 router = APIRouter(prefix="/jobs", tags=["jobs"])
 
@@ -33,3 +34,31 @@ def update_job_status(job_id: int, status: str, db: Session = Depends(get_db)):
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
     return job
+
+
+@router.put("/{job_id}", response_model=schemas.JobOut)
+def update_job(job_id: int, payload: schemas.JobCreate, db: Session = Depends(get_db)):
+    from sqlalchemy import update
+    db.execute(update(models.Job).where(models.Job.id == job_id).values(**payload.model_dump()))
+    db.commit()
+    job = crud.get_job(db, job_id)
+    if not job:
+        raise HTTPException(status_code=404, detail="Job not found")
+    return job
+
+
+@router.post("/{job_id}/invoice", response_model=schemas.InvoiceOut)
+def invoice_from_job(job_id: int, db: Session = Depends(get_db)):
+    job = crud.get_job(db, job_id)
+    if not job:
+        raise HTTPException(status_code=404, detail="Job not found")
+    total = job.total_amount or job.flat_rate or 450
+    invoice = crud.create_invoice(db, {
+        "invoice_number": "INV-" + str(job_id) + "-" + datetime.utcnow().strftime("%Y%m%d%H%M%S"),
+        "customer_id": job.customer_id,
+        "job_id": job.id,
+        "total": total,
+        "status": "sent",
+        "line_items": job.title
+    })
+    return invoice

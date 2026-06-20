@@ -13,6 +13,7 @@ class LeadBase(BaseModel):
     service_type: Optional[str] = None
     preferred_time: Optional[str] = None
     description: Optional[str] = None
+    notes: Optional[str] = None
 
 
 class LeadCreate(LeadBase):

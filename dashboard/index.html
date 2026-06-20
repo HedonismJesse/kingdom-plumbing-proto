@@ -332,11 +332,84 @@
     font-weight: 700;
     color: #fff;
   }
+  .btn {
+    display: inline-flex; align-items: center; gap: .4rem;
+    padding: .5rem 1rem; border-radius: 10px; font-size: .82rem;
+    font-weight: 600; border: none; cursor: pointer; transition: opacity .15s;
+  }
+  .btn:hover { opacity: .9; }
+  .btn-primary { background: var(--primary); color: #fff; }
+  .btn-success { background: var(--success); color: #fff; }
+  .btn-ghost { background: transparent; color: var(--zinc-600); border: 1px solid var(--zinc-200); }
+  .btn-sm { padding: .35rem .7rem; font-size: .78rem; border-radius: 8px; }
+
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+    display: none; align-items: center; justify-content: center;
+    z-index: 200; padding: 1rem;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: #fff; border-radius: 16px;
+    width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto;
+    box-shadow: 0 20px 60px -10px rgba(0,0,0,0.2);
+  }
+  .modal-header {
+    padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--zinc-100);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .modal-header h3 { font-family: 'Playfair Display', Georgia, serif; font-size: 1.1rem; font-weight: 700; }
+  .modal-body { padding: 1.25rem 1.5rem; }
+  .modal-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--zinc-100); display: flex; justify-content: flex-end; gap: .75rem; }
+  .form-group { margin-bottom: 1rem; }
+  .form-group label { display: block; font-size: .78rem; font-weight: 600; color: var(--zinc-600); margin-bottom: .35rem; }
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%; padding: .55rem .75rem; border: 1px solid var(--zinc-200);
+    border-radius: 8px; font-size: .9rem; font-family: inherit; background: #fff; color: var(--zinc-900);
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light);
+  }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+
+  .mini-stat { display: flex; align-items: center; gap: .6rem; padding: .6rem .85rem; background: var(--zinc-50); border-radius: 10px; }
+  .mini-stat .num { font-family: 'Playfair Display', Georgia, serif; font-size: 1.1rem; font-weight: 700; }
+  .mini-stat .lbl { font-size: .72rem; color: var(--zinc-500); }
+
+  .action-btn {
+    display: inline-flex; align-items: center; gap: .3rem;
+    padding: .2rem .5rem; border-radius: 6px; font-size: .72rem; font-weight: 600;
+    border: none; cursor: pointer; background: var(--primary-light); color: var(--primary-dark);
+  }
+  .action-btn:hover { background: #dbeafe; }
+
   @media (max-width: 640px) {
-    .header-inner { flex-direction: column; align-items: flex-start; gap: .5rem; }
-    .grid { grid-template-columns: 1fr; }
+    .trust-bar { font-size: .7rem; padding: .4rem .75rem; }
+    .header-inner { padding: .75rem 1rem; flex-wrap: wrap; gap: .5rem; }
+    .brand h1 { font-size: 1rem; }
+    .brand span { font-size: .7rem; }
+    .brand-icon { width: 32px; height: 32px; }
+    .refresh-pill { font-size: .7rem; padding: .25rem .6rem; }
     .container { padding: 1rem; }
-    .pipeline { justify-content: center; }
+    .pipeline { gap: .35rem; margin-bottom: 1.25rem; }
+    .pipeline-step { padding: .4rem .75rem; font-size: .75rem; }
+    .pipeline-arrow { font-size: .8rem; }
+    .grid { grid-template-columns: 1fr; gap: .75rem; margin-bottom: 1.5rem; }
+    .card { padding: 1.25rem; border-radius: 14px; }
+    .card .value { font-size: 1.75rem; }
+    .panels { gap: 1rem; }
+    .panel { padding: 1.25rem; border-radius: 14px; }
+    .panel h2 { font-size: 1rem; }
+    table { font-size: .8rem; }
+    thead th { padding: .6rem .7rem; }
+    tbody td { padding: .65rem .7rem; }
+    .form-row { grid-template-columns: 1fr; }
+    footer { padding: 1.5rem 1rem; }
+  }
+  @media (max-width: 380px) {
+    .pipeline-step svg { display: none; }
+    .card-icon { width: 36px; height: 36px; }
+    .card-icon svg { width: 16px; height: 16px; }
   }
 </style>
 </head>
@@ -435,17 +508,61 @@
     <div class="panel panel-full">
       <div class="panel-header">
         <h2>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>
-          Recent Leads
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          Cash Flow
         </h2>
-        <span class="panel-count" id="leadsCount">0</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.75rem;">
+        <div class="mini-stat">
+          <div><div class="num" id="mtdRevenue">—</div><div class="lbl">Revenue MTD</div></div>
+        </div>
+        <div class="mini-stat">
+          <div><div class="num" id="pipelineValue">—</div><div class="lbl">Pipeline</div></div>
+        </div>
+        <div class="mini-stat">
+          <div><div class="num" id="unbilledValue">—</div><div class="lbl">Unbilled Work</div></div>
+        </div>
+        <div class="mini-stat">
+          <div><div class="num" id="avgDaysToPay">—</div><div class="lbl">Avg Days to Pay</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel panel-full">
+      <div class="panel-header">
+        <h2>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          Marketing ROI
+        </h2>
+        <button class="btn btn-ghost btn-sm" onclick="openModal('leadModal')">+ Add Lead</button>
       </div>
       <div class="table-wrap">
         <table>
           <thead>
-            <tr><th>Name</th><th>Service</th><th>Source</th><th class="col-narrow">Status</th><th class="col-narrow">Received</th></tr>
+            <tr><th>Source</th><th class="col-narrow">Leads</th><th class="col-narrow">Conv.</th><th class="col-narrow">Rate</th><th class="col-narrow">Est. Revenue</th></tr>
           </thead>
-          <tbody id="leadsTable"><tr><td colspan="5"><div class="skeleton" style="width:100%"></div></td></tr></tbody>
+          <tbody id="marketingTable"><tr><td colspan="5"><div class="skeleton" style="width:100%"></div></td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="panel panel-full">
+      <div class="panel-header">
+        <h2>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>
+          Recent Leads
+        </h2>
+        <div style="display:flex;gap:.5rem;align-items:center;">
+          <span class="panel-count" id="leadsCount">0</span>
+          <button class="btn btn-primary btn-sm" onclick="openModal('leadModal')">+ Add Lead</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Name</th><th>Service</th><th>Source</th><th class="col-narrow">Status</th><th class="col-narrow">Received</th><th class="col-narrow">Action</th></tr>
+          </thead>
+          <tbody id="leadsTable"><tr><td colspan="6"><div class="skeleton" style="width:100%"></div></td></tr></tbody>
         </table>
       </div>
     </div>
@@ -456,14 +573,17 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
           Active Jobs
         </h2>
-        <span class="panel-count" id="jobsCount">0</span>
+        <div style="display:flex;gap:.5rem;align-items:center;">
+          <span class="panel-count" id="jobsCount">0</span>
+          <button class="btn btn-primary btn-sm" onclick="openModal('jobModal')">+ Add Job</button>
+        </div>
       </div>
       <div class="table-wrap">
         <table>
           <thead>
-            <tr><th>Job #</th><th>Title</th><th>Customer</th><th>Tech</th><th class="col-narrow">Status</th><th class="col-narrow">Date</th></tr>
+            <tr><th>Job #</th><th>Title</th><th>Customer</th><th>Tech</th><th class="col-narrow">Status</th><th class="col-narrow">Date</th><th class="col-narrow">Action</th></tr>
           </thead>
-          <tbody id="jobsTable"><tr><td colspan="6"><div class="skeleton" style="width:100%"></div></td></tr></tbody>
+          <tbody id="jobsTable"><tr><td colspan="7"><div class="skeleton" style="width:100%"></div></td></tr></tbody>
         </table>
       </div>
     </div>
@@ -474,14 +594,17 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M12 9v13"/></svg>
           Recent Invoices
         </h2>
-        <span class="panel-count" id="invoicesCount">0</span>
+        <div style="display:flex;gap:.5rem;align-items:center;">
+          <span class="panel-count" id="invoicesCount">0</span>
+          <button class="btn btn-primary btn-sm" onclick="openModal('invoiceModal')">+ Create Invoice</button>
+        </div>
       </div>
       <div class="table-wrap">
         <table>
           <thead>
-            <tr><th>Invoice #</th><th>Customer</th><th class="col-narrow">Total</th><th class="col-narrow">Status</th><th class="col-narrow">Paid</th></tr>
+            <tr><th>Invoice #</th><th>Customer</th><th class="col-narrow">Total</th><th class="col-narrow">Status</th><th class="col-narrow">Paid</th><th class="col-narrow">Action</th></tr>
           </thead>
-          <tbody id="invoicesTable"><tr><td colspan="5"><div class="skeleton" style="width:100%"></div></td></tr></tbody>
+          <tbody id="invoicesTable"><tr><td colspan="6"><div class="skeleton" style="width:100%"></div></td></tr></tbody>
         </table>
       </div>
     </div>
@@ -497,10 +620,87 @@
   </div>
 </footer>
 
+<!-- Modals -->
+<div class="modal-overlay" id="leadModalOverlay" onclick="if(event.target===this)closeModal('leadModal')">
+  <div class="modal">
+    <div class="modal-header"><h3>New Lead</h3><button class="btn btn-ghost btn-sm" onclick="closeModal('leadModal')">Close</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label>Name</label><input type="text" id="leadName" placeholder="Customer name"></div>
+      <div class="form-row">
+        <div class="form-group"><label>Phone</label><input type="tel" id="leadPhone" placeholder="(555) 123-4567"></div>
+        <div class="form-group"><label>Email</label><input type="email" id="leadEmail" placeholder="name@example.com"></div>
+      </div>
+      <div class="form-group"><label>Address</label><input type="text" id="leadAddress" placeholder="123 Main St, Eugene, OR"></div>
+      <div class="form-row">
+        <div class="form-group"><label>Service Type</label><select id="leadService"><option>Leak Repair</option><option>Water Heater</option><option>Drain Cleaning</option><option>Pipe Replacement</option><option>Remodel</option><option>Inspection</option><option>Emergency</option></select></div>
+        <div class="form-group"><label>Source</label><select id="leadSource"><option>Website</option><option>Google</option><option>Facebook</option><option>Referral</option><option>Yelp</option><option>Direct Call</option></select></div>
+      </div>
+      <div class="form-group"><label>Notes</label><textarea id="leadNotes" rows="3" placeholder="Brief description of the problem..."></textarea></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('leadModal')">Cancel</button><button class="btn btn-primary" onclick="createLead()">Save Lead</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="jobModalOverlay" onclick="if(event.target===this)closeModal('jobModal')">
+  <div class="modal">
+    <div class="modal-header"><h3>New Job</h3><button class="btn btn-ghost btn-sm" onclick="closeModal('jobModal')">Close</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label>Job Title</label><input type="text" id="jobTitle" placeholder="e.g., Kitchen Sink Leak Repair"></div>
+      <div class="form-row">
+        <div class="form-group"><label>Customer</label><select id="jobCustomer"><option value="">Select customer...</option></select></div>
+        <div class="form-group"><label>Technician</label><select id="jobTech"><option value="">Unassigned</option></select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Scheduled Date</label><input type="date" id="jobDate"></div>
+        <div class="form-group"><label>Status</label><select id="jobStatus"><option value="scheduled">Scheduled</option><option value="in_progress">In Progress</option></select></div>
+      </div>
+      <div class="form-group"><label>Description</label><textarea id="jobDesc" rows="3" placeholder="Scope of work..."></textarea></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('jobModal')">Cancel</button><button class="btn btn-primary" onclick="createJob()">Save Job</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="invoiceModalOverlay" onclick="if(event.target===this)closeModal('invoiceModal')">
+  <div class="modal">
+    <div class="modal-header"><h3>Create Invoice</h3><button class="btn btn-ghost btn-sm" onclick="closeModal('invoiceModal')">Close</button></div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group"><label>Customer</label><select id="invCustomer"><option value="">Select customer...</option></select></div>
+        <div class="form-group"><label>Job (optional)</label><select id="invJob"><option value="">None</option></select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Total</label><input type="number" id="invTotal" placeholder="0.00" step="0.01"></div>
+        <div class="form-group"><label>Status</label><select id="invStatus"><option value="sent">Sent</option><option value="draft">Draft</option></select></div>
+      </div>
+      <div class="form-group"><label>Line Items</label><textarea id="invItems" rows="3" placeholder="Labor: $200&#10;Parts: $150"></textarea></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('invoiceModal')">Cancel</button><button class="btn btn-primary" onclick="createInvoice()">Create Invoice</button></div>
+  </div>
+</div>
+
 <script>
 const fmtMoney = n => new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(n);
 const fmtDate = d => new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric'});
 const el = id => document.getElementById(id);
+
+function openModal(name) { document.getElementById(name+'Overlay').classList.add('open'); }
+function closeModal(name) { document.getElementById(name+'Overlay').classList.remove('open'); }
+
+async function createLead() {
+  const body = { name: el('leadName').value, phone: el('leadPhone').value, email: el('leadEmail').value, address: el('leadAddress').value, service_type: el('leadService').value, source: el('leadSource').value, notes: el('leadNotes').value, status: 'new' };
+  try { await fetch('/leads',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}); closeModal('leadModal'); load(); }
+  catch(e){ alert('Error: '+e.message); }
+}
+async function createJob() {
+  const body = { title: el('jobTitle').value, customer_id: parseInt(el('jobCustomer').value)||null, technician_id: parseInt(el('jobTech').value)||null, scheduled_date: el('jobDate').value, status: el('jobStatus').value, description: el('jobDesc').value, job_number: 'JOB-'+Date.now() };
+  try { await fetch('/jobs',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}); closeModal('jobModal'); load(); }
+  catch(e){ alert('Error: '+e.message); }
+}
+async function createInvoice() {
+  const body = { customer_id: parseInt(el('invCustomer').value)||null, job_id: parseInt(el('invJob').value)||null, total: parseFloat(el('invTotal').value)||0, status: el('invStatus').value, invoice_number: 'INV-'+Date.now(), line_items: el('invItems').value };
+  try { await fetch('/invoices',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}); closeModal('invoiceModal'); load(); }
+  catch(e){ alert('Error: '+e.message); }
+}
 
 async function load() {
   el('refreshText').textContent = 'Updating…';
@@ -532,42 +732,108 @@ async function load() {
     const empMap = Object.fromEntries(employees.map(e => [e.id, e.name]));
     const custMap = Object.fromEntries(customers.map(c => [c.id, c.name]));
 
-    el('leadsTable').innerHTML = leads.slice(0, 6).map(l => `
+    // Cash Flow metrics
+    const now = new Date();
+    const mtdPaid = invoices.filter(i => i.status === 'paid' && i.paid_date && new Date(i.paid_date).getMonth() === now.getMonth());
+    const mtdRevenue = mtdPaid.reduce((s, i) => s + (i.total || 0), 0);
+    const approvedEstimates = estimates.filter(e => e.status === 'approved');
+    const pipeline = approvedEstimates.reduce((s, e) => s + (e.total || 0), 0);
+    const completeJobs = jobs.filter(j => j.status === 'complete');
+    const unbilled = completeJobs.filter(j => !invoices.some(i => i.job_id === j.id && i.status === 'paid'));
+    const unbilledValue = unbilled.length * 450; // rough proxy
+    const paidInvoices = invoices.filter(i => i.status === 'paid' && i.paid_date && i.created_at);
+    const avgDays = paidInvoices.length ? Math.round(paidInvoices.reduce((s, i) => s + ((new Date(i.paid_date) - new Date(i.created_at)) / 86400000), 0) / paidInvoices.length) : 0;
+
+    el('mtdRevenue').textContent = fmtMoney(mtdRevenue);
+    el('pipelineValue').textContent = fmtMoney(pipeline);
+    el('unbilledValue').textContent = fmtMoney(unbilledValue);
+    el('avgDaysToPay').textContent = avgDays + ' days';
+
+    // Marketing ROI
+    const sources = [...new Set(leads.map(l => l.source).filter(Boolean))];
+    const mktRows = sources.map(src => {
+      const srcLeads = leads.filter(l => l.source === src);
+      const converted = srcLeads.filter(l => l.status === 'converted').length;
+      const rate = srcLeads.length ? Math.round((converted / srcLeads.length) * 100) : 0;
+      const revenue = converted * 850; // rough avg job value
+      return { src, total: srcLeads.length, converted, rate, revenue };
+    }).sort((a, b) => b.revenue - a.revenue);
+
+    el('marketingTable').innerHTML = mktRows.map(r => `
+      <tr>
+        <td><strong>${r.src}</strong></td>
+        <td class="col-narrow">${r.total}</td>
+        <td class="col-narrow">${r.converted}</td>
+        <td class="col-narrow">${r.rate}%</td>
+        <td class="col-narrow amount">${fmtMoney(r.revenue)}</td>
+      </tr>
+    `).join('') || '<tr><td colspan="5"><div class="empty-state">No lead sources yet.</div></td></tr>';
+
+    // Populate dropdowns
+    const custOpts = customers.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+    const empOpts = employees.map(e => `<option value="${e.id}">${e.name}</option>`).join('');
+    const jobOpts = jobs.map(j => `<option value="${j.id}">${j.job_number} — ${j.title}</option>`).join('');
+    ['jobCustomer','invCustomer'].forEach(id => { const s=el(id); const v=s.value; s.innerHTML='<option value="">Select customer...</option>'+custOpts; s.value=v; });
+    el('jobTech').innerHTML = '<option value="">Unassigned</option>' + empOpts;
+    el('invJob').innerHTML = '<option value="">None</option>' + jobOpts;
+
+    // Tables with action buttons
+    el('leadsTable').innerHTML = leads.slice(0, 8).map(l => `
       <tr>
         <td><strong>${l.name}</strong></td>
         <td>${l.service_type || '—'}</td>
         <td>${l.source}</td>
         <td><span class="status ${l.status}">${l.status}</span></td>
-        <td>${fmtDate(l.created_at)}</td>
+        <td class="col-narrow">${fmtDate(l.created_at)}</td>
+        <td class="col-narrow">${l.status==='new' ? `<button class="action-btn" onclick="convertLead(${l.id})">Convert</button>` : '—'}</td>
       </tr>
-    `).join('') || '<tr><td colspan="5"><div class="empty-state">No leads yet.</div></td></tr>';
+    `).join('') || '<tr><td colspan="6"><div class="empty-state">No leads yet.</div></td></tr>';
 
-    el('jobsTable').innerHTML = jobs.slice(0, 6).map(j => `
+    el('jobsTable').innerHTML = jobs.slice(0, 8).map(j => `
       <tr>
         <td><strong>${j.job_number}</strong></td>
         <td>${j.title}</td>
         <td>${custMap[j.customer_id] || '—'}</td>
-        <td>${empMap[j.technician_id] || '<span style="color:var(--text-light)">Unassigned</span>'}</td>
+        <td>${empMap[j.technician_id] || '<span style="color:var(--zinc-400)">Unassigned</span>'}</td>
         <td><span class="status ${j.status}">${j.status.replace('_',' ')}</span></td>
-        <td>${j.scheduled_date ? fmtDate(j.scheduled_date) : '—'}</td>
+        <td class="col-narrow">${j.scheduled_date ? fmtDate(j.scheduled_date) : '—'}</td>
+        <td class="col-narrow">${j.status==='in_progress' ? `<button class="action-btn" onclick="completeJob(${j.id})">Complete</button>` : j.status==='complete' ? `<button class="action-btn" onclick="invoiceJob(${j.id})">Invoice</button>` : '—'}</td>
       </tr>
-    `).join('') || '<tr><td colspan="6"><div class="empty-state">No jobs yet.</div></td></tr>';
+    `).join('') || '<tr><td colspan="7"><div class="empty-state">No jobs yet.</div></td></tr>';
 
-    el('invoicesTable').innerHTML = invoices.slice(0, 6).map(i => `
+    el('invoicesTable').innerHTML = invoices.slice(0, 8).map(i => `
       <tr>
         <td><strong>${i.invoice_number}</strong></td>
         <td>${custMap[i.customer_id] || '—'}</td>
-        <td class="amount">${fmtMoney(i.total || 0)}</td>
-        <td><span class="status ${i.status}">${i.status}</span></td>
-        <td>${i.paid_date ? fmtDate(i.paid_date) : '<span class="badge">Unpaid</span>'}</td>
+        <td class="amount col-narrow">${fmtMoney(i.total || 0)}</td>
+        <td class="col-narrow"><span class="status ${i.status}">${i.status}</span></td>
+        <td class="col-narrow">${i.paid_date ? fmtDate(i.paid_date) : '<span class="badge">Unpaid</span>'}</td>
+        <td class="col-narrow">${i.status==='sent'||i.status==='overdue' ? `<button class="action-btn" onclick="markPaid(${i.id})">Mark Paid</button>` : '—'}</td>
       </tr>
-    `).join('') || '<tr><td colspan="5"><div class="empty-state">No invoices yet.</div></td></tr>';
+    `).join('') || '<tr><td colspan="6"><div class="empty-state">No invoices yet.</div></td></tr>';
 
     el('refreshText').textContent = 'Updated ' + new Date().toLocaleTimeString();
   } catch (e) {
     el('refreshText').textContent = 'Error loading data';
     console.error(e);
   }
+}
+
+async function convertLead(id) {
+  try { await fetch(`/leads/${id}/convert`, {method:'POST'}); load(); }
+  catch(e){ alert('Error: '+e.message); }
+}
+async function completeJob(id) {
+  try { await fetch(`/jobs/${id}`, {method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify({status:'complete'})}); load(); }
+  catch(e){ alert('Error: '+e.message); }
+}
+async function invoiceJob(id) {
+  try { await fetch(`/jobs/${id}/invoice`, {method:'POST'}); load(); }
+  catch(e){ alert('Error: '+e.message); }
+}
+async function markPaid(id) {
+  try { await fetch(`/invoices/${id}/pay`, {method:'POST'}); load(); }
+  catch(e){ alert('Error: '+e.message); }
 }
 
 load();
