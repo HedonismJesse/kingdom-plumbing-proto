@@ -287,15 +287,17 @@
       <!-- SCREEN: HOME / CLOCK -->
       <div class="screen-body active" id="screenHome">
         <div class="mob-content">
-          <div class="status-pill" id="statusPill">Clocked In</div>
+          <div class="status-pill" id="statusPill">Clocked Out</div>
+
+          <div style="font-family:'Playfair Display',Georgia,serif;font-size:3.5rem;font-weight:700;text-align:center;color:var(--zinc-900);margin:1.5rem 0;" id="liveTimer">00:00:00</div>
 
           <div class="hours-row">
-            <span class="num" id="hoursToday">4.5</span>
+            <span class="num" id="hoursToday">0.0</span>
             <span class="lbl">hours today</span>
           </div>
 
-          <button class="big-btn clock-out" id="clockBtn" onclick="toggleClock()">
-            Clock Out
+          <button class="big-btn clock-in" id="clockBtn" onclick="toggleClock()">
+            Clock In
           </button>
 
           <div style="margin-top:1.5rem;">
@@ -580,6 +582,31 @@ function setFilter(btn, type) {
 /* ---------- CLOCK ---------- */
 let clockedIn = false;
 let currentEntryId = null;
+let clockInTime = null;
+let timerInterval = null;
+
+function fmtTimer(ms) {
+  const totalSec = Math.floor(ms / 1000);
+  const h = Math.floor(totalSec / 3600).toString().padStart(2,'0');
+  const m = Math.floor((totalSec % 3600) / 60).toString().padStart(2,'0');
+  const s = (totalSec % 60).toString().padStart(2,'0');
+  return `${h}:${m}:${s}`;
+}
+
+function startTimer() {
+  if (timerInterval) clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    if (clockInTime) {
+      const elapsed = Date.now() - new Date(clockInTime).getTime();
+      document.getElementById('liveTimer').textContent = fmtTimer(elapsed);
+    }
+  }, 1000);
+}
+
+function stopTimer() {
+  if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+  document.getElementById('liveTimer').textContent = '00:00:00';
+}
 
 async function loadClock() {
   const entries = await api('/api/time-entries');
@@ -591,7 +618,10 @@ async function loadClock() {
   const open = todayEntries.find(e => !e.clock_out);
   clockedIn = !!open;
   currentEntryId = open ? open.id : null;
+  clockInTime = open ? open.clock_in : null;
   updateClockUI();
+  if (clockedIn && clockInTime) startTimer();
+  else stopTimer();
 }
 
 function updateClockUI() {
@@ -619,10 +649,10 @@ async function toggleClock() {
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({employee_id: EMP_ID, clock_in: new Date().toISOString()})
     });
-    if (entry) { currentEntryId = entry.id; clockedIn = true; }
+    if (entry) { currentEntryId = entry.id; clockedIn = true; clockInTime = entry.clock_in; startTimer(); }
   } else if (currentEntryId) {
     await api('/api/time-entries/' + currentEntryId + '/clock-out', {method: 'POST'});
-    clockedIn = false; currentEntryId = null;
+    clockedIn = false; currentEntryId = null; clockInTime = null; stopTimer();
   }
   updateClockUI();
   loadClock();

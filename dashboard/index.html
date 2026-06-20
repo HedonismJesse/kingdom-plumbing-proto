@@ -430,9 +430,14 @@
         <span>Owner Dashboard — Live Prototype</span>
       </div>
     </div>
-    <div class="refresh-pill" id="refreshPill">
-      <span class="dot"></span>
-      <span id="refreshText">Updating…</span>
+    <div style="display:flex;align-items:center;gap:.5rem;">
+      <a href="/customer-portal.html" style="color:var(--zinc-300);text-decoration:none;font-size:.82rem;font-weight:600;padding:.4rem .85rem;border-radius:8px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--zinc-300)'">Customer Portal</a>
+      <a href="/dispatch.html" style="color:var(--zinc-300);text-decoration:none;font-size:.82rem;font-weight:600;padding:.4rem .85rem;border-radius:8px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--zinc-300)'">Dispatch</a>
+      <a href="/admin.html" style="color:var(--zinc-300);text-decoration:none;font-size:.82rem;font-weight:600;padding:.4rem .85rem;border-radius:8px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--zinc-300)'">Admin</a>
+      <div class="refresh-pill" id="refreshPill">
+        <span class="dot"></span>
+        <span id="refreshText">Updating…</span>
+      </div>
     </div>
   </div>
 </header>
@@ -443,7 +448,7 @@
     Today — <span id="todayDate" style="color:var(--zinc-500);font-size:1rem;font-family:'Inter',sans-serif;font-weight:500;"></span>
   </div>
 
-  <div class="grid" style="grid-template-columns: repeat(3, 1fr);">
+  <div class="grid" style="grid-template-columns: repeat(4, 1fr);">
     <div class="card">
       <div class="card-top">
         <h3>Jobs In Progress</h3>
@@ -456,23 +461,33 @@
     </div>
     <div class="card">
       <div class="card-top">
-        <h3>Revenue MTD</h3>
+        <h3>Completed Today</h3>
         <div class="card-icon green">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+      </div>
+      <div class="value" id="completedToday">—</div>
+      <div class="sub">Jobs finished today</div>
+    </div>
+    <div class="card">
+      <div class="card-top">
+        <h3>Open Invoices</h3>
+        <div class="card-icon red">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M12 9v13"/></svg>
+        </div>
+      </div>
+      <div class="value" id="openInvoicesCount">—</div>
+      <div class="sub">Awaiting payment</div>
+    </div>
+    <div class="card">
+      <div class="card-top">
+        <h3>Revenue MTD</h3>
+        <div class="card-icon blue">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 18V6"/></svg>
         </div>
       </div>
       <div class="value" id="mtdRevenueCard">—</div>
       <div class="sub">Collected this month</div>
-    </div>
-    <div class="card">
-      <div class="card-top">
-        <h3>Pending Estimates</h3>
-        <div class="card-icon red">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
-        </div>
-      </div>
-      <div class="value" id="pendingEstimates">—</div>
-      <div class="sub">Draft or sent, awaiting approval</div>
     </div>
   </div>
 
@@ -587,6 +602,27 @@
     </div>
   </div>
 
+  <div class="panel" style="margin-top:1.5rem;">
+    <div class="panel-header">
+      <h2>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        SMS Notifications
+      </h2>
+      <div style="display:flex;gap:.5rem;align-items:center;">
+        <span class="panel-count" id="smsCount">0</span>
+        <button class="btn btn-primary btn-sm" onclick="sendSms()">+ Send SMS</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>To</th><th>Message</th><th class="col-narrow">Status</th><th class="col-narrow">Sent</th></tr>
+        </thead>
+        <tbody id="smsTable"><tr><td colspan="4"><div class="empty-state">No SMS sent yet. Connect Twilio to enable.</div></td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
 </div>
 
 <footer>
@@ -697,8 +733,12 @@ async function load() {
     const outstanding = unpaid.reduce((s, i) => s + (i.total || 0), 0);
     const pendingEstimates = estimates.filter(e => e.status === 'draft' || e.status === 'sent').length;
 
-    el('openLeads').textContent = openLeads;
+    const todayIso = new Date().toISOString().split('T')[0];
+    const completedToday = jobs.filter(j => j.status === 'complete' && j.updated_at && j.updated_at.startsWith(todayIso)).length;
+
     el('activeJobs').textContent = activeJobs;
+    el('completedToday').textContent = completedToday;
+    el('openInvoicesCount').textContent = unpaid.length;
     el('pendingEstimates').textContent = pendingEstimates;
     el('outstandingRevenue').textContent = fmtMoney(outstanding);
 
@@ -791,7 +831,7 @@ async function load() {
         <td class="amount col-narrow">${fmtMoney(i.total || 0)}</td>
         <td class="col-narrow"><span class="status ${i.status}">${i.status}</span></td>
         <td class="col-narrow" ${ageClass}>${ageDays}d</td>
-        <td class="col-narrow"><button class="action-btn" onclick="markPaid(${i.id})">Mark Paid</button></td>
+        <td class="col-narrow">${i.stripe_payment_url ? `<a href="${i.stripe_payment_url}" target="_blank" class="action-btn" style="background:var(--success-bg);color:var(--success);">Pay</a>` : `<button class="action-btn" onclick="createPaymentLink(${i.id})">Get Link</button>`} <button class="action-btn" onclick="markPaid(${i.id})">Mark Paid</button></td>
       </tr>`;
     }).join('') || '<tr><td colspan="6"><div class="empty-state">No unpaid invoices.</div></td></tr>';
 
@@ -817,6 +857,13 @@ async function invoiceJob(id) {
 async function markPaid(id) {
   try { await fetch(`/invoices/${id}/pay`, {method:'POST'}); load(); }
   catch(e){ alert('Error: '+e.message); }
+}
+async function createPaymentLink(id) {
+  try {
+    const r = await fetch(`/invoices/${id}/payment-link`, {method:'POST'});
+    const data = await r.json();
+    if (data.url) { alert('Payment link created:\n' + data.url); load(); }
+  } catch(e){ alert('Error: '+e.message); }
 }
 
 load();

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kingdom Plumbing — Dispatch Calendar</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --zinc-50: #fafafa; --zinc-100: #f4f4f5; --zinc-200: #e4e4e7; --zinc-300: #d4d4d8;
+    --zinc-400: #a1a1aa; --zinc-500: #71717a; --zinc-600: #52525b; --zinc-700: #3f3f46;
+    --zinc-800: #27272a; --zinc-900: #18181b;
+    --primary: #2563eb; --primary-light: #eff6ff; --primary-dark: #1e40af;
+    --success: #059669; --success-bg: #ecfdf5; --warning: #d97706; --warning-bg: #fef3c7;
+    --danger: #dc2626; --danger-bg: #fef2f2; --indigo: #6366f1; --indigo-bg: #eef2ff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', sans-serif; background: var(--zinc-50); color: var(--zinc-900); }
+  .container { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem; }
+  header { background: var(--zinc-900); color: #fff; padding: 1rem 1.5rem; }
+  .header-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+  .brand h1 { font-family: 'Playfair Display', Georgia, serif; font-size: 1.25rem; }
+  .brand span { font-size: .78rem; color: var(--zinc-400); }
+  .back-link { color: var(--zinc-300); text-decoration: none; font-size: .85rem; font-weight: 600; }
+  .controls { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+  .controls h2 { font-family: 'Playfair Display', Georgia, serif; font-size: 1.3rem; }
+  .nav-btn { padding: 8px 14px; border-radius: 8px; border: 1px solid var(--zinc-200); background: #fff; cursor: pointer; font-weight: 600; font-size: .85rem; }
+  .week-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; margin-bottom: 2rem; }
+  .day-col { background: #fff; border-radius: 12px; border: 1px solid var(--zinc-100); min-height: 320px; overflow: hidden; }
+  .day-header { padding: 12px; text-align: center; border-bottom: 1px solid var(--zinc-100); background: var(--zinc-50); }
+  .day-name { font-size: .72rem; font-weight: 700; color: var(--zinc-500); text-transform: uppercase; letter-spacing: .06em; }
+  .day-num { font-family: 'Playfair Display', Georgia, serif; font-size: 1.4rem; font-weight: 700; }
+  .day-body { padding: 8px; }
+  .job-pill {
+    padding: 8px 10px; border-radius: 8px; font-size: .78rem; font-weight: 600;
+    margin-bottom: 6px; cursor: pointer; border-left: 3px solid transparent;
+  }
+  .job-pill.scheduled { background: var(--primary-light); color: var(--primary-dark); border-left-color: var(--primary); }
+  .job-pill.in_progress { background: var(--warning-bg); color: #92400e; border-left-color: var(--warning); }
+  .job-pill.complete { background: var(--success-bg); color: var(--success); border-left-color: var(--success); }
+  .job-pill .time { font-size: .7rem; opacity: .7; font-weight: 500; }
+  .job-pill .tech { font-size: .7rem; opacity: .7; }
+  .panel { background: #fff; border-radius: 16px; padding: 1.5rem; border: 1px solid var(--zinc-100); }
+  .panel h2 { font-family: 'Playfair Display', Georgia, serif; font-size: 1.1rem; margin-bottom: 1rem; }
+  .tech-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--zinc-100); }
+  .tech-row:last-child { border-bottom: none; }
+  .tech-avatar { width: 36px; height: 36px; border-radius: 18px; background: var(--indigo-bg); display: flex; align-items: center; justify-content: center; color: var(--indigo); font-weight: 700; font-size: .85rem; }
+  .tech-name { font-weight: 700; font-size: .9rem; }
+  .tech-meta { font-size: .78rem; color: var(--zinc-500); }
+  .tech-hours { margin-left: auto; font-weight: 700; color: var(--primary); }
+  .unassigned { background: var(--danger-bg); color: var(--danger); padding: 2px 8px; border-radius: 6px; font-size: .72rem; font-weight: 700; }
+  @media (max-width: 900px) { .week-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 640px) { .week-grid { grid-template-columns: 1fr; } .container { padding: 1rem; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="brand">
+      <h1>Kingdom Plumbing</h1>
+      <span>Dispatch Calendar</span>
+    </div>
+    <a href="/" class="back-link">&#8592; Back to Dashboard</a>
+  </div>
+</header>
+
+<div class="container">
+  <div class="controls">
+    <h2 id="weekRange">This Week</h2>
+    <button class="nav-btn" onclick="changeWeek(-1)">&#8592; Prev</button>
+    <button class="nav-btn" onclick="changeWeek(0)">Today</button>
+    <button class="nav-btn" onclick="changeWeek(1)">Next &#8594;</button>
+  </div>
+
+  <div class="week-grid" id="calendar"></div>
+
+  <div class="panel">
+    <h2>Team Workload</h2>
+    <div id="teamWorkload"></div>
+  </div>
+</div>
+
+<script>
+let weekOffset = 0;
+let allJobs = [], allEmployees = [];
+
+function fmtDate(d) { return new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric'}); }
+
+async function api(path, opts={}) {
+  const res = await fetch(path, opts);
+  if (!res.ok) return null;
+  return res.json();
+}
+
+function getWeekDays(offset) {
+  const now = new Date();
+  const day = now.getDay();
+  const diff = (day + 6) % 7;
+  const mon = new Date(now); mon.setDate(now.getDate() - diff + offset * 7);
+  const days = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(mon); d.setDate(mon.getDate() + i);
+    days.push(d);
+  }
+  return days;
+}
+
+function toIso(d) { return d.toISOString().split('T')[0]; }
+
+async function render() {
+  const days = getWeekDays(weekOffset);
+  document.getElementById('weekRange').textContent =
+    days[0].toLocaleDateString('en-US',{month:'long',day:'numeric'}) + ' – ' +
+    days[6].toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+
+  [allJobs, allEmployees] = await Promise.all([api('/jobs'), api('/employees')]);
+  const empMap = Object.fromEntries(allEmployees.map(e => [e.id, e.name]));
+
+  const html = days.map(d => {
+    const iso = toIso(d);
+    const dayJobs = (allJobs || []).filter(j => j.scheduled_date && j.scheduled_date.startsWith(iso));
+    const isToday = iso === toIso(new Date());
+    const pills = dayJobs.map(j => `
+      <div class="job-pill ${j.status}" title="${j.title} — ${j.address || ''}">
+        <div style="font-weight:700;">${j.job_number}</div>
+        <div>${j.title}</div>
+        <div class="tech">${empMap[j.technician_id] || '<span class="unassigned">Unassigned</span>'}</div>
+      </div>`).join('') || '<div style="color:var(--zinc-400);font-size:.78rem;text-align:center;padding:20px 0;">No jobs</div>';
+    return `
+      <div class="day-col">
+        <div class="day-header" style="${isToday ? 'background:var(--primary-light);' : ''}">
+          <div class="day-name">${d.toLocaleDateString('en-US',{weekday:'short'})}</div>
+          <div class="day-num" style="${isToday ? 'color:var(--primary);' : ''}">${d.getDate()}</div>
+        </div>
+        <div class="day-body">${pills}</div>
+      </div>`;
+  }).join('');
+  document.getElementById('calendar').innerHTML = html;
+
+  // Team workload
+  const todayIso = toIso(new Date());
+  const weekJobs = (allJobs || []).filter(j => j.scheduled_date && days.some(d => toIso(d) === j.scheduled_date.slice(0,10)));
+  const workload = {};
+  allEmployees.forEach(e => workload[e.id] = {name: e.name, count: 0, hours: 0});
+  weekJobs.forEach(j => {
+    if (j.technician_id && workload[j.technician_id]) {
+      workload[j.technician_id].count++;
+      workload[j.technician_id].hours += j.estimated_hours || 2;
+    }
+  });
+  document.getElementById('teamWorkload').innerHTML = Object.values(workload).map(w => `
+    <div class="tech-row">
+      <div class="tech-avatar">${w.name.split(' ').map(n=>n[0]).join('').slice(0,2)}</div>
+      <div>
+        <div class="tech-name">${w.name}</div>
+        <div class="tech-meta">${w.count} job${w.count!==1?'s':''} this week</div>
+      </div>
+      <div class="tech-hours">${w.hours.toFixed(1)}h est.</div>
+    </div>`).join('');
+}
+
+function changeWeek(dir) {
+  weekOffset = dir === 0 ? 0 : weekOffset + dir;
+  render();
+}
+
+render();
+</script>
+
+</body>
+</html>

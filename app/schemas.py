@@ -138,6 +138,7 @@ class InvoiceBase(BaseModel):
     total: Optional[float] = None
     amount_paid: float = 0.0
     due_date: Optional[datetime] = None
+    stripe_payment_url: Optional[str] = None
     notes: Optional[str] = None
 
 

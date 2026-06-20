@@ -33,3 +33,17 @@ def mark_paid(invoice_id: int, db: Session = Depends(get_db)):
     if not invoice:
         raise HTTPException(status_code=404, detail="Invoice not found")
     return invoice
+
+
+@router.post("/{invoice_id}/payment-link")
+def create_payment_link(invoice_id: int, db: Session = Depends(get_db)):
+    invoice = crud.get_invoice(db, invoice_id)
+    if not invoice:
+        raise HTTPException(status_code=404, detail="Invoice not found")
+    # Mock Stripe payment link — replace with real Stripe integration
+    from urllib.parse import quote
+    url = f"https://pay.stripe.com/test/receipts/{quote(invoice.invoice_number)}/{invoice_id}"
+    invoice.stripe_payment_url = url
+    db.commit()
+    db.refresh(invoice)
+    return {"url": url, "invoice_id": invoice_id}

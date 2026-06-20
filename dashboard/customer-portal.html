@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kingdom Plumbing — Customer Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --zinc-50: #fafafa; --zinc-100: #f4f4f5; --zinc-200: #e4e4e7; --zinc-300: #d4d4d8;
+    --zinc-400: #a1a1aa; --zinc-500: #71717a; --zinc-600: #52525b; --zinc-700: #3f3f46;
+    --zinc-800: #27272a; --zinc-900: #18181b;
+    --primary: #2563eb; --primary-light: #eff6ff; --primary-dark: #1e40af;
+    --success: #059669; --success-bg: #ecfdf5; --danger: #dc2626; --danger-bg: #fef2f2;
+    --indigo: #6366f1; --indigo-bg: #eef2ff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', sans-serif; background: var(--zinc-50); color: var(--zinc-900); }
+  .container { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem; }
+  header { background: var(--zinc-900); color: #fff; padding: 1rem 1.5rem; }
+  .header-inner { max-width: 900px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+  .brand h1 { font-family: 'Playfair Display', Georgia, serif; font-size: 1.25rem; }
+  .brand span { font-size: .78rem; color: var(--zinc-400); }
+  .back-link { color: var(--zinc-300); text-decoration: none; font-size: .85rem; font-weight: 600; }
+  .card { background: #fff; border-radius: 16px; padding: 1.5rem; border: 1px solid var(--zinc-100); margin-bottom: 1.5rem; }
+  .card h2 { font-family: 'Playfair Display', Georgia, serif; font-size: 1.1rem; margin-bottom: 1rem; }
+  .field-label { font-size: .72rem; font-weight: 700; color: var(--zinc-500); text-transform: uppercase; letter-spacing: 1px; margin-bottom: .4rem; display: block; }
+  .text-input { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--zinc-200); background: var(--zinc-50); font-size: .9rem; margin-bottom: 1rem; }
+  .btn { padding: 12px 24px; border-radius: 12px; border: none; font-size: .95rem; font-weight: 700; cursor: pointer; }
+  .btn-primary { background: var(--primary); color: #fff; }
+  .btn-success { background: var(--success); color: #fff; }
+  .btn-ghost { background: #fff; color: var(--zinc-700); border: 1px solid var(--zinc-200); }
+  .status { display: inline-flex; align-items: center; gap: .3rem; padding: .25rem .7rem; border-radius: 999px; font-size: .75rem; font-weight: 600; }
+  .status.sent { background: #eff6ff; color: #1e40af; }
+  .status.approved { background: var(--success-bg); color: var(--success); }
+  .status.complete { background: var(--success-bg); color: var(--success); }
+  .status.draft { background: var(--zinc-100); color: var(--zinc-600); }
+  .item-row { display: flex; justify-content: space-between; align-items: center; padding: 14px; border: 1px solid var(--zinc-100); border-radius: 12px; margin-bottom: 10px; }
+  .item-title { font-weight: 700; font-size: .95rem; }
+  .item-meta { font-size: .82rem; color: var(--zinc-500); margin-top: 2px; }
+  .amount { font-family: 'Playfair Display', Georgia, serif; font-size: 1.4rem; font-weight: 700; }
+  .tabs { display: flex; gap: 8px; margin-bottom: 1.5rem; border-bottom: 1px solid var(--zinc-200); padding-bottom: 1rem; }
+  .tab { padding: 8px 16px; border-radius: 8px; font-size: .85rem; font-weight: 600; cursor: pointer; border: none; background: transparent; color: var(--zinc-500); }
+  .tab.active { background: var(--primary-light); color: var(--primary); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+  .empty { color: var(--zinc-500); font-size: .9rem; padding: 24px; text-align: center; }
+  @media (max-width: 640px) { .container { padding: 1rem; } .item-row { flex-direction: column; align-items: flex-start; gap: .5rem; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="brand">
+      <h1>Kingdom Plumbing</h1>
+      <span>Customer Portal</span>
+    </div>
+    <a href="/" class="back-link">&#8592; Back</a>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- LOGIN -->
+  <div class="card" id="loginCard">
+    <h2>Welcome Back</h2>
+    <p style="color:var(--zinc-500);margin-bottom:1rem;font-size:.9rem;">Enter your phone or email to view your jobs, estimates & invoices.</p>
+    <label class="field-label">Phone or Email</label>
+    <input type="text" class="text-input" id="loginInput" placeholder="(555) 123-4567 or name@example.com">
+    <button class="btn btn-primary" onclick="lookupCustomer()">Sign In</button>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="dashboard" style="display:none;">
+    <div style="font-family:'Playfair Display',Georgia,serif;font-size:1.5rem;font-weight:700;margin-bottom:1.5rem;">
+      Hello, <span id="custName">Customer</span>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('jobs')">My Jobs</button>
+      <button class="tab" onclick="switchTab('estimates')">Estimates</button>
+      <button class="tab" onclick="switchTab('invoices')">Invoices</button>
+      <button class="tab" onclick="switchTab('book')">Book Service</button>
+    </div>
+
+    <div class="tab-content active" id="tab-jobs">
+      <div id="myJobs"></div>
+    </div>
+
+    <div class="tab-content" id="tab-estimates">
+      <div id="myEstimates"></div>
+    </div>
+
+    <div class="tab-content" id="tab-invoices">
+      <div id="myInvoices"></div>
+    </div>
+
+    <div class="tab-content" id="tab-book">
+      <div class="card">
+        <h2>Request Service</h2>
+        <label class="field-label">Your Name</label>
+        <input type="text" class="text-input" id="bookName" placeholder="Full name">
+        <label class="field-label">Phone</label>
+        <input type="tel" class="text-input" id="bookPhone" placeholder="(555) 123-4567">
+        <label class="field-label">Service Needed</label>
+        <select class="text-input" id="bookService"><option>Leak Repair</option><option>Water Heater</option><option>Drain Cleaning</option><option>Pipe Replacement</option><option>Remodel</option><option>Emergency</option></select>
+        <label class="field-label">Preferred Date</label>
+        <input type="date" class="text-input" id="bookDate">
+        <label class="field-label">Description</label>
+        <textarea class="text-input" id="bookDesc" rows="3" placeholder="Describe the problem..."></textarea>
+        <button class="btn btn-primary" onclick="bookService()">Request Service</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const fmtMoney = n => new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(n);
+const fmtDate = d => new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+let currentCustomer = null;
+let allJobs = [], allEstimates = [], allInvoices = [];
+
+async function api(path, opts={}) {
+  const res = await fetch(path, opts);
+  if (!res.ok) return null;
+  return res.json();
+}
+
+async function lookupCustomer() {
+  const val = document.getElementById('loginInput').value.trim().toLowerCase();
+  if (!val) return;
+  const customers = await api('/customers');
+  const c = customers.find(x => (x.phone && x.phone.toLowerCase().includes(val)) || (x.email && x.email.toLowerCase() === val));
+  if (!c) { alert('Customer not found. Try a different phone or email.'); return; }
+  currentCustomer = c;
+  document.getElementById('custName').textContent = c.name;
+  document.getElementById('loginCard').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+  await loadCustomerData();
+}
+
+async function loadCustomerData() {
+  [allJobs, allEstimates, allInvoices] = await Promise.all([
+    api('/jobs'), api('/estimates'), api('/invoices')
+  ]);
+  const myJobs = allJobs.filter(j => j.customer_id === currentCustomer.id);
+  const myEst = allEstimates.filter(e => e.customer_id === currentCustomer.id);
+  const myInv = allInvoices.filter(i => i.customer_id === currentCustomer.id);
+
+  document.getElementById('myJobs').innerHTML = myJobs.length ? myJobs.map(j => `
+    <div class="item-row">
+      <div>
+        <div class="item-title">${j.title}</div>
+        <div class="item-meta">${j.job_number} &middot; ${fmtDate(j.scheduled_date || j.created_at)}</div>
+      </div>
+      <span class="status ${j.status}">${j.status.replace('_',' ')}</span>
+    </div>`).join('') : '<div class="empty">No jobs yet.</div>';
+
+  document.getElementById('myEstimates').innerHTML = myEst.length ? myEst.map(e => `
+    <div class="item-row">
+      <div>
+        <div class="item-title">${e.title}</div>
+        <div class="item-meta">${e.estimate_number} &middot; ${fmtDate(e.created_at)}</div>
+      </div>
+      <div style="text-align:right;">
+        <div class="amount">${fmtMoney(e.total || 0)}</div>
+        ${e.status === 'sent' ? `<button class="btn btn-success" style="margin-top:6px;padding:6px 14px;font-size:.8rem;" onclick="approveEstimate(${e.id})">Approve</button>` : `<span class="status ${e.status}">${e.status}</span>`}
+      </div>
+    </div>`).join('') : '<div class="empty">No estimates yet.</div>';
+
+  document.getElementById('myInvoices').innerHTML = myInv.length ? myInv.map(i => `
+    <div class="item-row">
+      <div>
+        <div class="item-title">${i.invoice_number}</div>
+        <div class="item-meta">${fmtDate(i.created_at)} &middot; ${i.status}</div>
+      </div>
+      <div style="text-align:right;">
+        <div class="amount">${fmtMoney(i.total || 0)}</div>
+        ${i.status !== 'paid' && i.stripe_payment_url ? `<a href="${i.stripe_payment_url}" target="_blank" class="btn btn-primary" style="margin-top:6px;padding:6px 14px;font-size:.8rem;display:inline-block;text-decoration:none;">Pay Now</a>` : ''}
+      </div>
+    </div>`).join('') : '<div class="empty">No invoices yet.</div>';
+}
+
+async function approveEstimate(id) {
+  await api(`/estimates/${id}/approve`, {method:'POST'});
+  await loadCustomerData();
+}
+
+async function bookService() {
+  const body = {
+    source: 'website', name: document.getElementById('bookName').value,
+    phone: document.getElementById('bookPhone').value,
+    service_type: document.getElementById('bookService').value,
+    preferred_time: document.getElementById('bookDate').value,
+    description: document.getElementById('bookDesc').value,
+    status: 'new'
+  };
+  await api('/leads', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)});
+  alert('Service request submitted! We will contact you shortly.');
+  document.getElementById('bookName').value = '';
+  document.getElementById('bookPhone').value = '';
+  document.getElementById('bookDate').value = '';
+  document.getElementById('bookDesc').value = '';
+}
+
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+}
+</script>
+
+</body>
+</html>

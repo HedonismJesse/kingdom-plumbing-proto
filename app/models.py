@@ -127,6 +127,7 @@ class Invoice(Base):
     amount_paid = Column(Float, default=0.0)
     due_date = Column(DateTime, nullable=True)
     paid_date = Column(DateTime, nullable=True)
+    stripe_payment_url = Column(String(500), nullable=True)
     notes = Column(Text, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
