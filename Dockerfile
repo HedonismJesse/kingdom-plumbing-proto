@@ -2,6 +2,10 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
+ENV DATABASE_URL=sqlite:///./kingdom_plumbing.db
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
     libpq-dev \
@@ -14,7 +18,7 @@ COPY app/ ./app/
 COPY dashboard/ ./dashboard/
 COPY seed.py .
 COPY start.sh .
-RUN chmod +x start.sh
+RUN sed -i 's/\r$//' start.sh && chmod +x start.sh
 
 EXPOSE 8000
 
