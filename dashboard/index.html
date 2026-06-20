@@ -439,52 +439,34 @@
 
 <div class="container">
 
-  <div class="pipeline">
-    <div class="pipeline-step">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
-      Lead
-    </div>
-    <span class="pipeline-arrow">→</span>
-    <div class="pipeline-step">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
-      Estimate
-    </div>
-    <span class="pipeline-arrow">→</span>
-    <div class="pipeline-step active">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-      Job
-    </div>
-    <span class="pipeline-arrow">→</span>
-    <div class="pipeline-step">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      Invoice
-    </div>
+  <div style="font-family:'Playfair Display',Georgia,serif;font-size:1.35rem;font-weight:700;color:var(--zinc-900);margin-bottom:1rem;">
+    Today — <span id="todayDate" style="color:var(--zinc-500);font-size:1rem;font-family:'Inter',sans-serif;font-weight:500;"></span>
   </div>
 
-  <div class="grid">
+  <div class="grid" style="grid-template-columns: repeat(3, 1fr);">
     <div class="card">
       <div class="card-top">
-        <h3>Open Leads</h3>
-        <div class="card-icon blue">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>
-        </div>
-      </div>
-      <div class="value" id="openLeads">—</div>
-      <div class="sub"><span class="trend up">+3 this week</span> &middot; website, google, referrals</div>
-    </div>
-    <div class="card">
-      <div class="card-top">
-        <h3>Active Jobs</h3>
+        <h3>Jobs In Progress</h3>
         <div class="card-icon amber">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
         </div>
       </div>
       <div class="value" id="activeJobs">—</div>
-      <div class="sub">Scheduled or in progress today</div>
+      <div class="sub">Scheduled or in progress</div>
     </div>
     <div class="card">
       <div class="card-top">
-        <h3>Estimates Pending</h3>
+        <h3>Revenue MTD</h3>
+        <div class="card-icon green">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 18V6"/></svg>
+        </div>
+      </div>
+      <div class="value" id="mtdRevenueCard">—</div>
+      <div class="sub">Collected this month</div>
+    </div>
+    <div class="card">
+      <div class="card-top">
+        <h3>Pending Estimates</h3>
         <div class="card-icon red">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
         </div>
@@ -492,81 +474,9 @@
       <div class="value" id="pendingEstimates">—</div>
       <div class="sub">Draft or sent, awaiting approval</div>
     </div>
-    <div class="card">
-      <div class="card-top">
-        <h3>Outstanding Revenue</h3>
-        <div class="card-icon green">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 18V6"/></svg>
-        </div>
-      </div>
-      <div class="value" id="outstandingRevenue">—</div>
-      <div class="sub">Total not yet collected</div>
-    </div>
   </div>
 
   <div class="panels">
-    <div class="panel panel-full">
-      <div class="panel-header">
-        <h2>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-          Cash Flow
-        </h2>
-      </div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.75rem;">
-        <div class="mini-stat">
-          <div><div class="num" id="mtdRevenue">—</div><div class="lbl">Revenue MTD</div></div>
-        </div>
-        <div class="mini-stat">
-          <div><div class="num" id="pipelineValue">—</div><div class="lbl">Pipeline</div></div>
-        </div>
-        <div class="mini-stat">
-          <div><div class="num" id="unbilledValue">—</div><div class="lbl">Unbilled Work</div></div>
-        </div>
-        <div class="mini-stat">
-          <div><div class="num" id="avgDaysToPay">—</div><div class="lbl">Avg Days to Pay</div></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="panel panel-full">
-      <div class="panel-header">
-        <h2>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-          Marketing ROI
-        </h2>
-        <button class="btn btn-ghost btn-sm" onclick="openModal('leadModal')">+ Add Lead</button>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr><th>Source</th><th class="col-narrow">Leads</th><th class="col-narrow">Conv.</th><th class="col-narrow">Rate</th><th class="col-narrow">Est. Revenue</th></tr>
-          </thead>
-          <tbody id="marketingTable"><tr><td colspan="5"><div class="skeleton" style="width:100%"></div></td></tr></tbody>
-        </table>
-      </div>
-    </div>
-
-    <div class="panel panel-full">
-      <div class="panel-header">
-        <h2>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>
-          Recent Leads
-        </h2>
-        <div style="display:flex;gap:.5rem;align-items:center;">
-          <span class="panel-count" id="leadsCount">0</span>
-          <button class="btn btn-primary btn-sm" onclick="openModal('leadModal')">+ Add Lead</button>
-        </div>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr><th>Name</th><th>Service</th><th>Source</th><th class="col-narrow">Status</th><th class="col-narrow">Received</th><th class="col-narrow">Action</th></tr>
-          </thead>
-          <tbody id="leadsTable"><tr><td colspan="6"><div class="skeleton" style="width:100%"></div></td></tr></tbody>
-        </table>
-      </div>
-    </div>
-
     <div class="panel">
       <div class="panel-header">
         <h2>
@@ -591,8 +501,26 @@
     <div class="panel">
       <div class="panel-header">
         <h2>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          Marketing ROI
+        </h2>
+        <button class="btn btn-ghost btn-sm" onclick="openModal('leadModal')">+ Add Lead</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Source</th><th class="col-narrow">Leads</th><th class="col-narrow">Conv.</th><th class="col-narrow">Rate</th><th class="col-narrow">Est. Revenue</th></tr>
+          </thead>
+          <tbody id="marketingTable"><tr><td colspan="5"><div class="skeleton" style="width:100%"></div></td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <h2>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M12 9v13"/></svg>
-          Recent Invoices
+          Invoices Due
         </h2>
         <div style="display:flex;gap:.5rem;align-items:center;">
           <span class="panel-count" id="invoicesCount">0</span>
@@ -602,11 +530,60 @@
       <div class="table-wrap">
         <table>
           <thead>
-            <tr><th>Invoice #</th><th>Customer</th><th class="col-narrow">Total</th><th class="col-narrow">Status</th><th class="col-narrow">Paid</th><th class="col-narrow">Action</th></tr>
+            <tr><th>Invoice #</th><th>Customer</th><th class="col-narrow">Total</th><th class="col-narrow">Status</th><th class="col-narrow">Age</th><th class="col-narrow">Action</th></tr>
           </thead>
           <tbody id="invoicesTable"><tr><td colspan="6"><div class="skeleton" style="width:100%"></div></td></tr></tbody>
         </table>
       </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <h2>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          Cash Flow
+        </h2>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:.75rem;margin-bottom:1rem;">
+        <div class="mini-stat">
+          <div><div class="num" id="mtdRevenue">—</div><div class="lbl">Revenue MTD</div></div>
+        </div>
+        <div class="mini-stat">
+          <div><div class="num" id="pipelineValue">—</div><div class="lbl">Pipeline</div></div>
+        </div>
+        <div class="mini-stat">
+          <div><div class="num" id="unbilledValue">—</div><div class="lbl">Unbilled Work</div></div>
+        </div>
+        <div class="mini-stat">
+          <div><div class="num" id="avgDaysToPay">—</div><div class="lbl">Avg Days to Pay</div></div>
+        </div>
+      </div>
+      <div style="border-top:1px solid var(--zinc-100);padding-top:.75rem;">
+        <div style="font-size:.78rem;font-weight:600;color:var(--zinc-500);margin-bottom:.5rem;">OUTSTANDING</div>
+        <div style="font-family:'Playfair Display',Georgia,serif;font-size:1.5rem;font-weight:700;color:var(--zinc-900);" id="outstandingRevenue">—</div>
+        <div style="font-size:.82rem;color:var(--zinc-500);margin-top:.25rem;">Total not yet collected</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-top:1.5rem;">
+    <div class="panel-header">
+      <h2>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>
+        Lead Pipeline
+      </h2>
+      <div style="display:flex;gap:.5rem;align-items:center;">
+        <span class="panel-count" id="leadsCount">0</span>
+        <button class="btn btn-primary btn-sm" onclick="openModal('leadModal')">+ Add Lead</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Name</th><th>Service</th><th>Source</th><th class="col-narrow">Status</th><th class="col-narrow">Received</th><th class="col-narrow">Action</th></tr>
+        </thead>
+        <tbody id="leadsTable"><tr><td colspan="6"><div class="skeleton" style="width:100%"></div></td></tr></tbody>
+      </table>
     </div>
   </div>
 
@@ -744,10 +721,13 @@ async function load() {
     const paidInvoices = invoices.filter(i => i.status === 'paid' && i.paid_date && i.created_at);
     const avgDays = paidInvoices.length ? Math.round(paidInvoices.reduce((s, i) => s + ((new Date(i.paid_date) - new Date(i.created_at)) / 86400000), 0) / paidInvoices.length) : 0;
 
+    el('todayDate').textContent = new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
     el('mtdRevenue').textContent = fmtMoney(mtdRevenue);
+    el('mtdRevenueCard').textContent = fmtMoney(mtdRevenue);
     el('pipelineValue').textContent = fmtMoney(pipeline);
     el('unbilledValue').textContent = fmtMoney(unbilledValue);
     el('avgDaysToPay').textContent = avgDays + ' days';
+    el('outstandingRevenue').textContent = fmtMoney(outstanding);
 
     // Marketing ROI
     const sources = [...new Set(leads.map(l => l.source).filter(Boolean))];
@@ -801,16 +781,19 @@ async function load() {
       </tr>
     `).join('') || '<tr><td colspan="7"><div class="empty-state">No jobs yet.</div></td></tr>';
 
-    el('invoicesTable').innerHTML = invoices.slice(0, 8).map(i => `
-      <tr>
+    const nowMs = Date.now();
+    el('invoicesTable').innerHTML = invoices.filter(i => i.status !== 'paid').slice(0, 8).map(i => {
+      const ageDays = i.created_at ? Math.floor((nowMs - new Date(i.created_at).getTime()) / 86400000) : 0;
+      const ageClass = ageDays > 14 ? 'style="color:var(--danger);font-weight:700;"' : ageDays > 7 ? 'style="color:var(--warning);font-weight:600;"' : '';
+      return `<tr>
         <td><strong>${i.invoice_number}</strong></td>
         <td>${custMap[i.customer_id] || '—'}</td>
         <td class="amount col-narrow">${fmtMoney(i.total || 0)}</td>
         <td class="col-narrow"><span class="status ${i.status}">${i.status}</span></td>
-        <td class="col-narrow">${i.paid_date ? fmtDate(i.paid_date) : '<span class="badge">Unpaid</span>'}</td>
-        <td class="col-narrow">${i.status==='sent'||i.status==='overdue' ? `<button class="action-btn" onclick="markPaid(${i.id})">Mark Paid</button>` : '—'}</td>
-      </tr>
-    `).join('') || '<tr><td colspan="6"><div class="empty-state">No invoices yet.</div></td></tr>';
+        <td class="col-narrow" ${ageClass}>${ageDays}d</td>
+        <td class="col-narrow"><button class="action-btn" onclick="markPaid(${i.id})">Mark Paid</button></td>
+      </tr>`;
+    }).join('') || '<tr><td colspan="6"><div class="empty-state">No unpaid invoices.</div></td></tr>';
 
     el('refreshText').textContent = 'Updated ' + new Date().toLocaleTimeString();
   } catch (e) {
