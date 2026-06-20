@@ -12,41 +12,45 @@ Base.metadata.create_all(bind=engine)
 db = SessionLocal()
 
 FAKE_CUSTOMERS = [
-    {"name": "John Smith", "phone": "503-555-0101", "email": "jsmith@example.com", "address": "124 Oak St, Portland, OR 97201", "city": "Portland"},
-    {"name": "Sarah Jones", "phone": "503-555-0102", "email": "sjones@example.com", "address": "456 Maple Ave, Portland, OR 97202", "city": "Portland"},
-    {"name": "Mike Baker", "phone": "503-555-0103", "email": "mbaker@example.com", "address": "789 Pine Ln, Beaverton, OR 97005", "city": "Beaverton"},
-    {"name": "Lisa Lee", "phone": "503-555-0104", "email": "llee@example.com", "address": "321 Cedar Rd, Portland, OR 97203", "city": "Portland"},
-    {"name": "Raj Patel", "phone": "503-555-0105", "email": "rpatel@example.com", "address": "654 Birch Blvd, Hillsboro, OR 97123", "city": "Hillsboro"},
-    {"name": "Emily Chen", "phone": "503-555-0106", "email": "echen@example.com", "address": "987 Willow Way, Portland, OR 97204", "city": "Portland"},
-    {"name": "David Garcia", "phone": "503-555-0107", "email": "dgarcia@example.com", "address": "147 Elm St, Beaverton, OR 97006", "city": "Beaverton"},
-    {"name": "Karen White", "phone": "503-555-0108", "email": "kwhite@example.com", "address": "258 Spruce Dr, Portland, OR 97205", "city": "Portland"},
+    {"name": "Margaret Henderson", "phone": "503-555-0101", "email": "mhenderson@gmail.com", "address": "124 SE Oak St, Portland, OR 97214", "city": "Portland", "notes": "Repeat customer. Prefers morning appointments. Has two rental properties."},
+    {"name": "Robert & Linda Crawford", "phone": "503-555-0102", "email": "crawford.family@yahoo.com", "address": "456 NW Maple Ave, Portland, OR 97209", "city": "Portland", "notes": "Older home (1920s). Frequent pipe issues. Wants full repipe estimate."},
+    {"name": "Steve Nakamura", "phone": "503-555-0103", "email": "snakamura@outlook.com", "address": "789 SW Pine Ln, Beaverton, OR 97005", "city": "Beaverton", "notes": "Commercial client. Sushi restaurant on Canyon Rd. Grease trap maintenance."},
+    {"name": "Diana Lopez", "phone": "503-555-0104", "email": "dlopez@hotmail.com", "address": "321 NE Cedar Rd, Portland, OR 97211", "city": "Portland", "notes": "New homeowner. Just bought fixer-upper in Alberta Arts District."},
+    {"name": "Anand Patel", "phone": "503-555-0105", "email": "apatel@gmail.com", "address": "654 SE Birch Blvd, Hillsboro, OR 97123", "city": "Hillsboro", "notes": "Property manager for 12-unit apartment complex. Needs reliable ongoing service."},
+    {"name": "Jennifer O'Brien", "phone": "503-555-0106", "email": "jobrien@gmail.com", "address": "987 NW Willow Way, Portland, OR 97210", "city": "Portland", "notes": "Referral from Margaret Henderson. Kitchen remodel starting next month."},
+    {"name": "Marcus Johnson", "phone": "503-555-0107", "email": "mjohnson@outlook.com", "address": "147 SW Elm St, Beaverton, OR 97006", "city": "Beaverton", "notes": "HOA president for condo building. Needs bids for repipe project."},
+    {"name": "Karen Whitfield", "phone": "503-555-0108", "email": "kwhitfield@gmail.com", "address": "258 NE Spruce Dr, Portland, OR 97212", "city": "Portland", "notes": "Emergency-only customer. Called at 2 AM last time. Very price-sensitive."},
 ]
 
 FAKE_EMPLOYEES = [
-    {"name": "Mike Torres", "role": "Field Technician", "phone": "503-555-0201", "email": "mtorres@kingdomplumbing.local", "hourly_rate": 35.0},
-    {"name": "Sarah Kim", "role": "Field Technician", "phone": "503-555-0202", "email": "skim@kingdomplumbing.local", "hourly_rate": 38.0},
+    {"name": "Mike Torres", "role": "Senior Field Technician", "phone": "503-555-0201", "email": "mtorres@kingdomplumbing.local", "hourly_rate": 38.0},
+    {"name": "Sarah Kim", "role": "Field Technician", "phone": "503-555-0202", "email": "skim@kingdomplumbing.local", "hourly_rate": 35.0},
     {"name": "James Wilson", "role": "Office Manager", "phone": "503-555-0203", "email": "jwilson@kingdomplumbing.local", "hourly_rate": 28.0},
-    {"name": "Angela Brown", "role": "Dispatcher", "phone": "503-555-0204", "email": "abrown@kingdomplumbing.local", "hourly_rate": 26.0},
+    {"name": "Angela Brown", "role": "Dispatcher / Scheduler", "phone": "503-555-0204", "email": "abrown@kingdomplumbing.local", "hourly_rate": 26.0},
 ]
 
 SERVICE_TYPES = [
-    "Emergency Repair",
-    "Water Heater",
+    "Emergency Leak Repair",
+    "Water Heater Replacement",
     "Drain Cleaning",
-    "Pipe Replacement",
-    "Inspection",
-    "Remodel",
+    "Whole-House Repipe",
+    "Annual Inspection",
+    "Bathroom Remodel",
+    "Sewer Line Replacement",
+    "Garbage Disposal Install",
 ]
 
 JOB_TITLES = [
-    "Kitchen sink leak repair",
-    "Water heater replacement",
-    "Main drain cleaning",
-    "Bathroom pipe replacement",
-    "Annual plumbing inspection",
-    "Shower valve installation",
-    "Toilet replacement",
-    "Garbage disposal repair",
+    "Kitchen sink leak under cabinet",
+    "Water heater replacement (50 gal)",
+    "Main drain line hydro-jet cleaning",
+    "Bathroom repipe — galvanized to PEX",
+    "Annual plumbing inspection & safety check",
+    "Shower valve cartridge replacement",
+    "Toilet replacement & flange repair",
+    "Garbage disposal install (Badger 5)",
+    "Sewer line camera inspection",
+    "Dishwasher water line hookup",
 ]
 
 
@@ -76,20 +80,52 @@ def create_employees():
     return employees
 
 
+LEAD_NAMES = [
+    ("Tom Bradley", "tbradley@gmail.com", "503-555-3101", "NE Portland"),
+    ("Rachel Green", "rgreen@outlook.com", "503-555-3102", "Beaverton"),
+    ("David Chen", "dchen@gmail.com", "503-555-3103", "Hillsboro"),
+    ("Amanda Foster", "afoster@yahoo.com", "503-555-3104", "Lake Oswego"),
+    ("Greg Murphy", "gmurphy@gmail.com", "503-555-3105", "Tigard"),
+    ("Nina Patel", "npatel@hotmail.com", "503-555-3106", "Portland"),
+    ("Chris Barnes", "cbarnes@outlook.com", "503-555-3107", "Gresham"),
+    ("Lisa Monroe", "lmonroe@gmail.com", "503-555-3108", "Milwaukie"),
+    ("Kevin Hartley", "khartley@yahoo.com", "503-555-3109", "West Linn"),
+    ("Sandra Ellis", "sellis@gmail.com", "503-555-3110", "Portland"),
+    ("Paul Nguyen", "pnguyen@outlook.com", "503-555-3111", "Beaverton"),
+    ("Heather Walsh", "hwalsh@gmail.com", "503-555-3112", "Oregon City"),
+]
+
+LEAD_DESCRIPTIONS = [
+    "No hot water since yesterday. Need ASAP — family of 5.",
+    "Basement flooding when washer drains. Suspect main line blockage.",
+    "Old galvanized pipes. Low pressure everywhere. Want estimate for repipe.",
+    "Remodeling master bath. Need plumber for rough-in and fixtures.",
+    "Water bill doubled last month. Think we have a leak somewhere.",
+    "Garbage disposal jammed and leaking under sink. Need replacement.",
+    "Toilet runs constantly and wobbles. May need flange repair.",
+    "Installing tankless water heater. Need gas line run and venting.",
+    "Sewer smell in backyard. Camera inspection requested.",
+    "Dishwasher not draining properly. Possible clogged drain line.",
+    "Shower barely drips. No pressure in master bath only.",
+    "Kitchen faucet leaking from handle base. Moen fixture.",
+]
+
 def create_leads():
     leads = []
+    sources = ["website", "google", "referral", "facebook", "thumbtack", "yelp"]
+    statuses = ["new", "new", "new", "contacted", "contacted", "converted"]  # weighted toward new
     for i in range(12):
-        service = random.choice(SERVICE_TYPES)
+        name, email, phone, city = LEAD_NAMES[i]
         l = models.Lead(
-            source="website",
-            name=f"Lead Person {i+1}",
-            phone=f"503-555-{3000+i:04d}",
-            email=f"lead{i+1}@example.com",
-            address="Portland, OR",
-            service_type=service,
-            preferred_time=random.choice(["Morning", "Afternoon", "Evening"]),
-            description=f"Interested in {service.lower()}",
-            status=random.choice(["new", "contacted", "converted"]),
+            source=random.choice(sources),
+            name=name,
+            phone=phone,
+            email=email,
+            address=f"{city}, OR",
+            service_type=random.choice(SERVICE_TYPES),
+            preferred_time=random.choice(["Morning (8-12)", "Afternoon (12-5)", "Evening (5-8)"]),
+            description=LEAD_DESCRIPTIONS[i],
+            status=random.choice(statuses),
         )
         db.add(l)
         leads.append(l)
