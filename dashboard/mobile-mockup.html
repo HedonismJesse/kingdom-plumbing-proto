@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kingdom Plumbing — Mobile Mockup</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --zinc-50: #fafafa; --zinc-100: #f4f4f5; --zinc-200: #e4e4e7; --zinc-300: #d4d4d8;
+    --zinc-400: #a1a1aa; --zinc-500: #71717a; --zinc-600: #52525b; --zinc-700: #3f3f46;
+    --zinc-800: #27272a; --zinc-900: #18181b; --zinc-950: #09090b;
+    --primary: #2563eb; --primary-light: #eff6ff; --primary-dark: #1e40af;
+    --success: #059669; --success-bg: #ecfdf5; --warning: #d97706; --warning-bg: #fef3c7;
+    --danger: #dc2626; --danger-bg: #fef2f2;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #d4d4d8;
+    display: flex; align-items: center; justify-content: center;
+    min-height: 100vh; padding: 2rem;
+  }
+
+  /* Phone frame */
+  .phone-frame {
+    width: 375px; height: 812px;
+    background: var(--zinc-950);
+    border-radius: 48px;
+    padding: 12px;
+    box-shadow: 0 25px 80px -20px rgba(0,0,0,0.4), 0 0 0 1px rgba(0,0,0,0.1);
+    position: relative;
+  }
+  .notch {
+    position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    width: 150px; height: 30px; background: var(--zinc-950);
+    border-radius: 0 0 20px 20px; z-index: 10;
+  }
+  .screen {
+    width: 100%; height: 100%;
+    background: var(--zinc-50);
+    border-radius: 40px;
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    position: relative;
+  }
+
+  /* Nav */
+  .mob-nav {
+    background: var(--zinc-900); color: #fff;
+    padding: 50px 16px 12px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .mob-nav h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.05rem; font-weight: 700;
+  }
+  .mob-nav span {
+    font-size: .7rem; color: var(--zinc-400);
+    display: block;
+  }
+
+  /* Content */
+  .mob-content { flex: 1; overflow-y: auto; padding: 16px; }
+
+  /* Status bar */
+  .status-pill {
+    display: inline-flex; align-items: center; gap: .4rem;
+    padding: .35rem .75rem; border-radius: 999px;
+    font-size: .78rem; font-weight: 600;
+    background: var(--success-bg); color: var(--success);
+    margin-bottom: 1rem;
+  }
+  .status-pill::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--success); }
+
+  /* Big button */
+  .big-btn {
+    width: 100%; padding: 1.1rem;
+    border-radius: 14px; border: none;
+    font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700;
+    cursor: pointer; text-align: center;
+    transition: transform .1s, box-shadow .1s;
+  }
+  .big-btn:active { transform: scale(.98); }
+  .big-btn.clock-in { background: var(--primary); color: #fff; box-shadow: 0 4px 12px rgba(37,99,235,0.3); }
+  .big-btn.clock-out { background: var(--danger); color: #fff; box-shadow: 0 4px 12px rgba(220,38,38,0.3); }
+  .big-btn.complete { background: var(--success); color: #fff; box-shadow: 0 4px 12px rgba(5,150,105,0.3); }
+  .big-btn.secondary { background: #fff; color: var(--zinc-700); border: 1px solid var(--zinc-200); }
+
+  /* Cards */
+  .mob-card {
+    background: #fff; border-radius: 14px;
+    padding: 1rem; margin-bottom: .75rem;
+    border: 1px solid var(--zinc-100);
+  }
+  .mob-card h3 { font-size: .85rem; font-weight: 600; color: var(--zinc-900); margin-bottom: .5rem; }
+  .mob-card p { font-size: .85rem; color: var(--zinc-600); line-height: 1.5; }
+  .mob-card .row { display: flex; justify-content: space-between; align-items: center; }
+  .mob-card .row + .row { margin-top: .5rem; padding-top: .5rem; border-top: 1px solid var(--zinc-100); }
+  .mob-card .label { font-size: .72rem; color: var(--zinc-400); font-weight: 500; }
+  .mob-card .value { font-size: .85rem; font-weight: 600; color: var(--zinc-900); }
+
+  /* Job card */
+  .job-card {
+    background: #fff; border-radius: 14px;
+    padding: 1rem; margin-bottom: .75rem;
+    border: 1px solid var(--zinc-100);
+    border-left: 4px solid var(--primary);
+  }
+  .job-card.current { border-left-color: var(--success); }
+  .job-card.next { border-left-color: var(--warning); }
+  .job-card .job-num { font-size: .72rem; font-weight: 700; color: var(--primary); margin-bottom: .2rem; }
+  .job-card .job-title { font-size: .95rem; font-weight: 700; color: var(--zinc-900); margin-bottom: .15rem; }
+  .job-card .job-addr { font-size: .82rem; color: var(--zinc-500); }
+  .job-card .job-meta { display: flex; gap: .6rem; margin-top: .5rem; font-size: .78rem; color: var(--zinc-500); }
+  .job-card .badge { background: var(--zinc-100); padding: .15rem .45rem; border-radius: 6px; font-size: .72rem; font-weight: 600; }
+
+  /* Time display */
+  .time-big {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 3.5rem; font-weight: 700;
+    color: var(--zinc-900); text-align: center;
+    letter-spacing: -0.03em;
+  }
+  .time-label { text-align: center; font-size: .85rem; color: var(--zinc-500); margin-bottom: 1.5rem; }
+
+  /* Hours today */
+  .hours-row {
+    display: flex; align-items: baseline; justify-content: center; gap: .4rem;
+    margin-bottom: 1.5rem;
+  }
+  .hours-row .num { font-family: 'Playfair Display', Georgia, serif; font-size: 2.5rem; font-weight: 700; color: var(--zinc-900); }
+  .hours-row .lbl { font-size: .85rem; color: var(--zinc-500); }
+
+  /* Tab bar */
+  .tab-bar {
+    display: flex; justify-content: space-around;
+    padding: 12px 0 24px;
+    background: #fff; border-top: 1px solid var(--zinc-100);
+  }
+  .tab-bar button {
+    background: none; border: none;
+    font-size: .72rem; font-weight: 600; color: var(--zinc-400);
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    cursor: pointer;
+  }
+  .tab-bar button.active { color: var(--primary); }
+  .tab-bar svg { width: 22px; height: 22px; }
+
+  /* Hidden screens */
+  .screen-body { display: none; flex-direction: column; height: 100%; }
+  .screen-body.active { display: flex; }
+
+  /* Mockup label */
+  .mockup-label {
+    position: absolute; top: -40px; left: 0;
+    font-size: .75rem; font-weight: 600; color: var(--zinc-500);
+    text-transform: uppercase; letter-spacing: .1em;
+  }
+</style>
+</head>
+<body>
+
+<div style="position:relative;">
+  <div class="mockup-label">Mockup — Field Technician</div>
+  <div class="phone-frame">
+    <div class="notch"></div>
+    <div class="screen">
+
+      <!-- NAV -->
+      <div class="mob-nav">
+        <div>
+          <h1>Kingdom Plumbing</h1>
+          <span>Mike — Technician</span>
+        </div>
+        <div style="font-size:.78rem;color:var(--zinc-400);font-weight:500;" id="clockTime">9:41 AM</div>
+      </div>
+
+      <!-- SCREEN: HOME / CLOCK -->
+      <div class="screen-body active" id="screenHome">
+        <div class="mob-content">
+          <div class="status-pill" id="statusPill">Clocked In</div>
+
+          <div class="hours-row">
+            <span class="num" id="hoursToday">4.5</span>
+            <span class="lbl">hours today</span>
+          </div>
+
+          <button class="big-btn clock-out" id="clockBtn" onclick="toggleClock()">
+            Clock Out
+          </button>
+
+          <div style="margin-top:1.5rem;">
+            <div style="font-size:.78rem;font-weight:600;color:var(--zinc-500);margin-bottom:.5rem;letter-spacing:.06em;text-transform:uppercase;">Current Job</div>
+            <div class="job-card current">
+              <div class="job-num">#1024</div>
+              <div class="job-title">Smith — Leak Repair</div>
+              <div class="job-addr">124 Oak St, Eugene</div>
+              <div class="job-meta">
+                <span class="badge">Residential</span>
+                <span>Est: $450</span>
+                <span>Time: 1.5 hrs</span>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div style="font-size:.78rem;font-weight:600;color:var(--zinc-500);margin-bottom:.5rem;letter-spacing:.06em;text-transform:uppercase;">Next Up</div>
+            <div class="job-card next">
+              <div class="job-num">#1026</div>
+              <div class="job-title">Baker — Drain Clean</div>
+              <div class="job-addr">785 River Rd, Eugene</div>
+              <div class="job-meta">
+                <span class="badge">Residential</span>
+                <span>11:00 AM</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCREEN: JOB DETAIL -->
+      <div class="screen-body" id="screenJob">
+        <div class="mob-content">
+          <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:1rem;cursor:pointer;" onclick="showScreen('screenHome')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--zinc-500)" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            <span style="font-size:.85rem;font-weight:600;color:var(--zinc-500);">Back</span>
+          </div>
+
+          <div class="job-card current" style="border-left-width:4px;">
+            <div class="job-num">#1024 — IN PROGRESS</div>
+            <div class="job-title" style="font-size:1.1rem;">Smith — Leak Repair</div>
+            <div class="job-addr">124 Oak St, Eugene, OR 97401</div>
+          </div>
+
+          <div class="mob-card">
+            <div class="row"><span class="label">Est. Total</span><span class="value">$450.00</span></div>
+            <div class="row"><span class="label">Est. Time</span><span class="value">1.5 hrs</span></div>
+            <div class="row"><span class="label">Type</span><span class="value">Residential</span></div>
+          </div>
+
+          <div class="mob-card">
+            <h3>Notes</h3>
+            <p>Customer reported slow leak under kitchen sink. Check P-trap and supply lines. Previous visit: none.</p>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.75rem;">
+            <button class="big-btn secondary" style="padding:.8rem;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:middle;margin-right:4px;"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+              Directions
+            </button>
+            <button class="big-btn secondary" style="padding:.8rem;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:middle;margin-right:4px;"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              Photos (3)
+            </button>
+          </div>
+
+          <button class="big-btn secondary" style="margin-bottom:.75rem;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:middle;margin-right:4px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Add Note
+          </button>
+
+          <button class="big-btn complete" style="margin-bottom:.5rem;" onclick="showScreen('screenHome')">
+            Mark Complete
+          </button>
+
+          <button class="big-btn secondary" style="margin-bottom:2rem;" onclick="showScreen('screenHome')">
+            Get Customer Signature
+          </button>
+        </div>
+      </div>
+
+      <!-- TAB BAR -->
+      <div class="tab-bar">
+        <button class="active" onclick="showScreen('screenHome')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Clock
+        </button>
+        <button>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+          Jobs
+        </button>
+        <button>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Profile
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+function showScreen(id) {
+  document.querySelectorAll('.screen-body').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  // Update tab active state
+  const tabs = document.querySelectorAll('.tab-bar button');
+  tabs.forEach(t => t.classList.remove('active'));
+  if (id === 'screenHome') tabs[0].classList.add('active');
+}
+
+let clockedIn = true;
+function toggleClock() {
+  clockedIn = !clockedIn;
+  const btn = document.getElementById('clockBtn');
+  const pill = document.getElementById('statusPill');
+  if (clockedIn) {
+    btn.textContent = 'Clock Out';
+    btn.className = 'big-btn clock-out';
+    pill.textContent = 'Clocked In';
+    pill.style.background = 'var(--success-bg)';
+    pill.style.color = 'var(--success)';
+    pill.style.setProperty('--pill-dot', 'var(--success)');
+  } else {
+    btn.textContent = 'Clock In';
+    btn.className = 'big-btn clock-in';
+    pill.textContent = 'Clocked Out';
+    pill.style.background = 'var(--zinc-100)';
+    pill.style.color = 'var(--zinc-500)';
+  }
+}
+
+// Click job card to open detail
+document.querySelectorAll('.job-card').forEach(card => {
+  card.style.cursor = 'pointer';
+  card.addEventListener('click', () => showScreen('screenJob'));
+});
+
+// Update time
+function updateTime() {
+  document.getElementById('clockTime').textContent = new Date().toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'});
+}
+updateTime();
+setInterval(updateTime, 30000);
+</script>
+
+</body>
+</html>
