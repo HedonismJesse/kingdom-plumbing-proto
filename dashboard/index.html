@@ -317,11 +317,11 @@
     </div>
     <div class="card">
       <div class="card-top">
-        <h3>Unpaid Invoices</h3>
-        <div class="card-icon red">🧾</div>
+        <h3>Estimates Pending</h3>
+        <div class="card-icon red">📋</div>
       </div>
-      <div class="value" id="unpaidInvoices">—</div>
-      <div class="sub">Awaiting customer payment</div>
+      <div class="value" id="pendingEstimates">—</div>
+      <div class="sub">Draft or sent, awaiting approval</div>
     </div>
     <div class="card">
       <div class="card-top">
@@ -393,10 +393,11 @@ const el = id => document.getElementById(id);
 async function load() {
   el('refreshText').textContent = 'Updating…';
   try {
-    const [leads, jobs, invoices, employees, customers] = await Promise.all([
+    const [leads, jobs, invoices, estimates, employees, customers] = await Promise.all([
       fetch('/leads').then(r => r.json()),
       fetch('/jobs').then(r => r.json()),
       fetch('/invoices').then(r => r.json()),
+      fetch('/estimates').then(r => r.json()),
       fetch('/employees').then(r => r.json()),
       fetch('/customers').then(r => r.json()),
     ]);
@@ -405,10 +406,11 @@ async function load() {
     const activeJobs = jobs.filter(j => j.status === 'scheduled' || j.status === 'in_progress').length;
     const unpaid = invoices.filter(i => i.status !== 'paid');
     const outstanding = unpaid.reduce((s, i) => s + (i.total || 0), 0);
+    const pendingEstimates = estimates.filter(e => e.status === 'draft' || e.status === 'sent').length;
 
     el('openLeads').textContent = openLeads;
     el('activeJobs').textContent = activeJobs;
-    el('unpaidInvoices').textContent = unpaid.length;
+    el('pendingEstimates').textContent = pendingEstimates;
     el('outstandingRevenue').textContent = fmtMoney(outstanding);
 
     el('leadsCount').textContent = leads.length;
