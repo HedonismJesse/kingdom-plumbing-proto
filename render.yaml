@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: kingdom-plumbing-proto
+    runtime: docker
+    plan: free
+    envVars:
+      - key: DATABASE_URL
+        value: sqlite:///./kingdom_plumbing.db
+      - key: SECRET_KEY
+        generateValue: true
+      - key: PYTHON_VERSION
+        value: 3.12.0

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kingdom Plumbing — Demo Dashboard</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: #f4f6f8;
+    color: #1a202c;
+    line-height: 1.5;
+  }
+  header {
+    background: #0d47a1;
+    color: #fff;
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  header h1 { font-size: 1.25rem; font-weight: 600; }
+  header span { font-size: .85rem; opacity: .8; }
+  .container { max-width: 1100px; margin: 1.5rem auto; padding: 0 1rem; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .card {
+    background: #fff;
+    border-radius: .5rem;
+    padding: 1.25rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,.08);
+    border-left: 4px solid #0d47a1;
+  }
+  .card h3 { font-size: .8rem; text-transform: uppercase; color: #64748b; margin-bottom: .5rem; letter-spacing: .05em; }
+  .card .value { font-size: 1.75rem; font-weight: 700; color: #0d47a1; }
+  .card .sub { font-size: .85rem; color: #64748b; margin-top: .25rem; }
+  .panel {
+    background: #fff;
+    border-radius: .5rem;
+    padding: 1.25rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,.08);
+    margin-bottom: 1rem;
+  }
+  .panel h2 { font-size: 1rem; margin-bottom: .75rem; color: #0d47a1; }
+  table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+  th, td { text-align: left; padding: .6rem .5rem; }
+  th { color: #64748b; font-weight: 600; border-bottom: 2px solid #e2e8f0; font-size: .8rem; text-transform: uppercase; }
+  td { border-bottom: 1px solid #e2e8f0; }
+  tr:last-child td { border-bottom: 0; }
+  .status {
+    display: inline-block;
+    padding: .15rem .5rem;
+    border-radius: .25rem;
+    font-size: .75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  .status.new { background: #e3f2fd; color: #1565c0; }
+  .status.contacted { background: #fff3e0; color: #ef6c00; }
+  .status.converted { background: #e8f5e9; color: #2e7d32; }
+  .status.scheduled { background: #e3f2fd; color: #1565c0; }
+  .status.in_progress { background: #fff3e0; color: #ef6c00; }
+  .status.complete { background: #e8f5e9; color: #2e7d32; }
+  .status.sent { background: #fce4ec; color: #c2185b; }
+  .status.paid { background: #e8f5e9; color: #2e7d32; }
+  .status.draft { background: #f5f5f5; color: #424242; }
+  .badge {
+    display: inline-block;
+    padding: .15rem .5rem;
+    border-radius: .25rem;
+    font-size: .75rem;
+    font-weight: 600;
+    background: #fce4ec;
+    color: #c2185b;
+  }
+  .loading { color: #64748b; font-size: .9rem; padding: .5rem 0; }
+  .error { color: #c2185b; font-size: .9rem; padding: .5rem 0; }
+  footer {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: #94a3b8;
+    font-size: .8rem;
+  }
+  a { color: #0d47a1; }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Kingdom Plumbing &amp; Construction</h1>
+    <span>Owner Dashboard — Live Demo</span>
+  </div>
+  <span id="refreshHint">Refreshing…</span>
+</header>
+
+<div class="container">
+
+  <div class="grid">
+    <div class="card">
+      <h3>Open Leads</h3>
+      <div class="value" id="openLeads">—</div>
+      <div class="sub">From website, phone, referrals</div>
+    </div>
+    <div class="card">
+      <h3>Active Jobs</h3>
+      <div class="value" id="activeJobs">—</div>
+      <div class="sub">Scheduled or in progress today</div>
+    </div>
+    <div class="card">
+      <h3>Unpaid Invoices</h3>
+      <div class="value" id="unpaidInvoices">—</div>
+      <div class="sub">Awaiting customer payment</div>
+    </div>
+    <div class="card">
+      <h3>Outstanding Revenue</h3>
+      <div class="value" id="outstandingRevenue">—</div>
+      <div class="sub">Total dollars not yet collected</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Recent Leads</h2>
+    <table>
+      <thead>
+        <tr><th>Name</th><th>Service</th><th>Source</th><th>Status</th><th>Received</th></tr>
+      </thead>
+      <tbody id="leadsTable"><tr><td class="loading" colspan="5">Loading…</td></tr></tbody>
+    </table>
+  </div>
+
+  <div class="panel">
+    <h2>Active Jobs</h2>
+    <table>
+      <thead>
+        <tr><th>Job #</th><th>Title</th><th>Customer</th><th>Tech</th><th>Status</th><th>Date</th></tr>
+      </thead>
+      <tbody id="jobsTable"><tr><td class="loading" colspan="6">Loading…</td></tr></tbody>
+    </table>
+  </div>
+
+  <div class="panel">
+    <h2>Recent Invoices</h2>
+    <table>
+      <thead>
+        <tr><th>Invoice #</th><th>Customer</th><th>Total</th><th>Status</th><th>Paid Date</th></tr>
+      </thead>
+      <tbody id="invoicesTable"><tr><td class="loading" colspan="5">Loading…</td></tr></tbody>
+    </table>
+  </div>
+
+</div>
+
+<footer>
+  This is a <strong>live prototype</strong>. Data refreshes automatically.<br>
+  API docs: <a href="/docs">/docs</a> &middot; Health: <a href="/health">/health</a>
+</footer>
+
+<script>
+const fmtMoney = n => new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(n);
+const fmtDate = d => new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+const el = id => document.getElementById(id);
+
+async function load() {
+  el('refreshHint').textContent = 'Refreshing…';
+  try {
+    const [leads, jobs, invoices, employees, customers] = await Promise.all([
+      fetch('/leads').then(r => r.json()),
+      fetch('/jobs').then(r => r.json()),
+      fetch('/invoices').then(r => r.json()),
+      fetch('/employees').then(r => r.json()),
+      fetch('/customers').then(r => r.json()),
+    ]);
+
+    const openLeads = leads.filter(l => l.status === 'new').length;
+    const activeJobs = jobs.filter(j => j.status === 'scheduled' || j.status === 'in_progress').length;
+    const unpaid = invoices.filter(i => i.status !== 'paid');
+    const outstanding = unpaid.reduce((s, i) => s + (i.total || 0), 0);
+
+    el('openLeads').textContent = openLeads;
+    el('activeJobs').textContent = activeJobs;
+    el('unpaidInvoices').textContent = unpaid.length;
+    el('outstandingRevenue').textContent = fmtMoney(outstanding);
+
+    const empMap = Object.fromEntries(employees.map(e => [e.id, e.name]));
+    const custMap = Object.fromEntries(customers.map(c => [c.id, c.name]));
+
+    el('leadsTable').innerHTML = leads.slice(0, 6).map(l => `
+      <tr>
+        <td>${l.name}</td>
+        <td>${l.service_type || '—'}</td>
+        <td>${l.source}</td>
+        <td><span class="status ${l.status}">${l.status}</span></td>
+        <td>${fmtDate(l.created_at)}</td>
+      </tr>
+    `).join('') || '<tr><td colspan="5" class="loading">No leads yet.</td></tr>';
+
+    el('jobsTable').innerHTML = jobs.slice(0, 6).map(j => `
+      <tr>
+        <td>${j.job_number}</td>
+        <td>${j.title}</td>
+        <td>${custMap[j.customer_id] || '—'}</td>
+        <td>${empMap[j.technician_id] || 'Unassigned'}</td>
+        <td><span class="status ${j.status}">${j.status.replace('_',' ')}</span></td>
+        <td>${j.scheduled_date ? fmtDate(j.scheduled_date) : '—'}</td>
+      </tr>
+    `).join('') || '<tr><td colspan="6" class="loading">No jobs yet.</td></tr>';
+
+    el('invoicesTable').innerHTML = invoices.slice(0, 6).map(i => `
+      <tr>
+        <td>${i.invoice_number}</td>
+        <td>${custMap[i.customer_id] || '—'}</td>
+        <td>${fmtMoney(i.total || 0)}</td>
+        <td><span class="status ${i.status}">${i.status}</span></td>
+        <td>${i.paid_date ? fmtDate(i.paid_date) : '<span class="badge">Unpaid</span>'}</td>
+      </tr>
+    `).join('') || '<tr><td colspan="5" class="loading">No invoices yet.</td></tr>';
+
+    el('refreshHint').textContent = 'Updated ' + new Date().toLocaleTimeString();
+  } catch (e) {
+    el('refreshHint').textContent = 'Error loading data';
+    console.error(e);
+  }
+}
+
+load();
+setInterval(load, 30000);
+</script>
+
+</body>
+</html>
