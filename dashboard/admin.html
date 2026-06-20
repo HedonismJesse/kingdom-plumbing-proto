@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kingdom Plumbing — Admin Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --zinc-50: #fafafa; --zinc-100: #f4f4f5; --zinc-200: #e4e4e7; --zinc-300: #d4d4d8;
+    --zinc-400: #a1a1aa; --zinc-500: #71717a; --zinc-600: #52525b; --zinc-700: #3f3f46;
+    --zinc-800: #27272a; --zinc-900: #18181b; --zinc-950: #09090b;
+    --primary: #2563eb; --primary-light: #eff6ff; --primary-dark: #1e40af;
+    --success: #059669; --success-bg: #ecfdf5; --warning: #d97706; --warning-bg: #fef3c7;
+    --danger: #dc2626; --danger-bg: #fef2f2; --indigo: #6366f1; --indigo-bg: #eef2ff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--zinc-50); }
+  .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+  h1 { font-family: 'Playfair Display', Georgia, serif; font-size: 1.8rem; margin-bottom: .25rem; }
+  .subtitle { color: var(--zinc-500); font-size: .95rem; margin-bottom: 2rem; }
+
+  /* Sections */
+  .section { background: #fff; border-radius: 16px; border: 1px solid var(--zinc-100); margin-bottom: 1.5rem; overflow: hidden; }
+  .section-header { padding: 1.2rem 1.5rem; display: flex; align-items: center; gap: .75rem; cursor: pointer; border-bottom: 1px solid var(--zinc-100); }
+  .section-header.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .section-header h2 { font-size: 1.05rem; font-weight: 700; }
+  .section-body { padding: 1.5rem; display: none; }
+  .section-body.active { display: block; }
+
+  /* Filters / Inputs */
+  .field-label { font-size: .72rem; font-weight: 700; color: var(--zinc-500); letter-spacing: 1px; text-transform: uppercase; margin-bottom: .4rem; display: block; }
+  .text-input { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--zinc-200); background: var(--zinc-50); font-size: .9rem; font-family: 'Inter', sans-serif; margin-bottom: 1rem; }
+  .date-row { display: flex; gap: 1rem; margin-bottom: 1rem; }
+  .date-row > div { flex: 1; }
+  .date-input { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--zinc-200); background: var(--zinc-50); font-size: .9rem; font-family: 'Inter', sans-serif; }
+
+  /* Worker pills */
+  .pill-list { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1rem; }
+  .pill { padding: 7px 14px; border-radius: 20px; border: 1px solid var(--zinc-200); background: var(--zinc-100); font-size: .82rem; font-weight: 600; color: var(--zinc-700); cursor: pointer; }
+  .pill.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+  /* Toggle */
+  .toggle-row { display: flex; gap: 8px; margin-bottom: 1rem; }
+  .toggle { flex: 1; padding: 10px; border-radius: 10px; border: 1px solid var(--zinc-200); text-align: center; cursor: pointer; font-size: .9rem; font-weight: 600; }
+  .toggle.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+  /* Buttons */
+  .btn { padding: 12px 24px; border-radius: 12px; border: none; font-size: .95rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+  .btn-primary { background: var(--primary); color: #fff; }
+  .btn-secondary { background: #fff; color: var(--zinc-700); border: 1px solid var(--zinc-200); }
+
+  /* Tables / Cards */
+  .summary-card { display: flex; align-items: center; gap: 12px; padding: 14px; border-radius: 12px; border: 1px solid var(--zinc-100); margin-bottom: 10px; }
+  .avatar { width: 40px; height: 40px; border-radius: 20px; background: var(--primary-light); display: flex; align-items: center; justify-content: center; color: var(--primary); font-weight: 700; font-size: .9rem; flex-shrink: 0; }
+  .summary-name { font-weight: 700; font-size: .95rem; }
+  .summary-meta { font-size: .82rem; color: var(--zinc-500); }
+  .summary-hours { margin-left: auto; font-size: 1.3rem; font-weight: 700; color: var(--primary); }
+
+  .entry-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; border-bottom: 1px solid var(--zinc-100); }
+  .entry-row:last-child { border-bottom: none; }
+  .entry-date { font-weight: 600; font-size: .9rem; }
+  .entry-times { font-size: .82rem; color: var(--zinc-500); }
+  .entry-hrs { font-weight: 700; font-size: .95rem; }
+
+  .group-title { font-weight: 700; font-size: 1rem; margin-bottom: 8px; margin-top: 12px; }
+  .empty { color: var(--zinc-500); font-size: .9rem; padding: 24px; text-align: center; }
+
+  /* Nav */
+  .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; }
+  .back-link { color: var(--zinc-500); text-decoration: none; font-weight: 600; font-size: .9rem; display: inline-flex; align-items: center; gap: 4px; }
+  .back-link:hover { color: var(--primary); }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="topbar">
+    <a href="/" class="back-link">&#8592; Back to Dashboard</a>
+  </div>
+  <h1>Admin Panel</h1>
+  <p class="subtitle">Manage team, timesheets & documents</p>
+
+  <!-- TIMESHEETS -->
+  <div class="section">
+    <div class="section-header active" onclick="toggleSection(this, 'timesheets')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <h2>Timesheets</h2>
+    </div>
+    <div class="section-body active" id="timesheets">
+      <div class="date-row">
+        <div>
+          <label class="field-label">From</label>
+          <input type="date" class="date-input" id="tsFrom">
+        </div>
+        <div>
+          <label class="field-label">To</label>
+          <input type="date" class="date-input" id="tsTo">
+        </div>
+        <div style="display:flex;align-items:flex-end;">
+          <button class="btn btn-primary" onclick="loadTimesheets()">Load</button>
+        </div>
+      </div>
+      <div id="tsSummary"></div>
+      <div id="tsDetail"></div>
+    </div>
+  </div>
+
+  <!-- ADD WORKER -->
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this, 'addWorker')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+      <h2>Add Worker</h2>
+    </div>
+    <div class="section-body" id="addWorker">
+      <label class="field-label">Full Name *</label>
+      <input type="text" class="text-input" id="awName" placeholder="Jane Smith">
+
+      <label class="field-label">Role *</label>
+      <div class="toggle-row">
+        <div class="toggle active" data-role="worker" onclick="pickRole(this)">Worker</div>
+        <div class="toggle" data-role="admin" onclick="pickRole(this)">Admin</div>
+      </div>
+
+      <label class="field-label">PIN * (4+ digits)</label>
+      <input type="password" class="text-input" id="awPin" placeholder="••••" inputmode="numeric">
+
+      <label class="field-label">Phone (optional)</label>
+      <input type="tel" class="text-input" id="awPhone" placeholder="(555) 000-0000">
+
+      <label class="field-label">Email (optional)</label>
+      <input type="email" class="text-input" id="awEmail" placeholder="jane@kingdomplumbing.com">
+
+      <button class="btn btn-primary" onclick="addWorker()">Add Worker</button>
+    </div>
+  </div>
+
+  <!-- UPLOAD DOCUMENT -->
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this, 'uploadDoc')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      <h2>Upload Document</h2>
+    </div>
+    <div class="section-body" id="uploadDoc">
+      <label class="field-label">Worker *</label>
+      <div class="pill-list" id="udWorkers"></div>
+
+      <label class="field-label">Type *</label>
+      <div class="toggle-row">
+        <div class="toggle active" data-type="paystub" onclick="pickDocType(this)">Paystub</div>
+        <div class="toggle" data-type="tax" onclick="pickDocType(this)">Tax</div>
+        <div class="toggle" data-type="other" onclick="pickDocType(this)">Other</div>
+      </div>
+
+      <label class="field-label">Title *</label>
+      <input type="text" class="text-input" id="udTitle" placeholder="e.g. Pay Period Jan 1–15">
+
+      <label class="field-label">File URL (optional)</label>
+      <input type="url" class="text-input" id="udUrl" placeholder="https://drive.google.com/...">
+
+      <div class="date-row">
+        <div>
+          <label class="field-label">Period Start</label>
+          <input type="date" class="date-input" id="udPeriodStart">
+        </div>
+        <div>
+          <label class="field-label">Period End</label>
+          <input type="date" class="date-input" id="udPeriodEnd">
+        </div>
+      </div>
+
+      <button class="btn btn-primary" onclick="uploadDocument()">Upload Document</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = '';
+let selectedWorkerId = null;
+let selectedRole = 'worker';
+let selectedDocType = 'paystub';
+
+function fmtDate(d) {
+  if (!d) return '—';
+  const dt = new Date(d);
+  return dt.toLocaleDateString('en-US', {month:'short', day:'numeric'});
+}
+function fmtTime(d) {
+  if (!d) return '—';
+  const dt = new Date(d);
+  return dt.toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
+}
+
+async function api(path, opts={}) {
+  const res = await fetch(API + path, opts);
+  if (!res.ok) { console.error('API error', path, res.status); return null; }
+  return res.json();
+}
+
+/* Sections */
+function toggleSection(header, id) {
+  const body = document.getElementById(id);
+  const isOpen = body.classList.contains('active');
+  document.querySelectorAll('.section-header').forEach(h => h.classList.remove('active'));
+  document.querySelectorAll('.section-body').forEach(b => b.classList.remove('active'));
+  if (!isOpen) { header.classList.add('active'); body.classList.add('active'); }
+}
+
+/* Timesheets */
+function setWeekRange() {
+  const now = new Date();
+  const day = now.getDay();
+  const diff = (day + 6) % 7;
+  const mon = new Date(now); mon.setDate(now.getDate() - diff);
+  const sun = new Date(mon); sun.setDate(mon.getDate() + 6);
+  document.getElementById('tsFrom').value = mon.toISOString().split('T')[0];
+  document.getElementById('tsTo').value = sun.toISOString().split('T')[0];
+}
+
+async function loadTimesheets() {
+  const entries = await api('/api/time-entries');
+  if (!entries) return;
+  const from = new Date(document.getElementById('tsFrom').value + 'T00:00:00');
+  const to = new Date(document.getElementById('tsTo').value + 'T23:59:59');
+
+  const filtered = entries.filter(e => {
+    const d = new Date(e.clock_in);
+    return d >= from && d <= to;
+  });
+
+  // Group by employee
+  const byEmp = {};
+  for (const e of filtered) {
+    const name = e.employee_id ? 'Worker ' + e.employee_id : 'Unknown';
+    if (!byEmp[name]) byEmp[name] = { entries: [], total: 0 };
+    byEmp[name].entries.push(e);
+    byEmp[name].total += e.hours_worked || 0;
+  }
+
+  // Summary
+  const sumHtml = Object.entries(byEmp).map(([name, data]) => `
+    <div class="summary-card">
+      <div class="avatar">${name.split(' ').map(n=>n[0]).join('').slice(0,2)}</div>
+      <div>
+        <div class="summary-name">${name}</div>
+        <div class="summary-meta">${data.entries.length} session${data.entries.length!==1?'s':''}</div>
+      </div>
+      <div class="summary-hours">${data.total.toFixed(1)}h</div>
+    </div>`).join('') || '<div class="empty">No entries for this period.</div>';
+  document.getElementById('tsSummary').innerHTML = '<div class="group-title">Summary</div>' + sumHtml;
+
+  // Detail
+  const detHtml = Object.entries(byEmp).map(([name, data]) => {
+    const rows = data.entries.map(e => `
+      <div class="entry-row">
+        <div>
+          <div class="entry-date">${fmtDate(e.clock_in)}</div>
+          <div class="entry-times">${fmtTime(e.clock_in)} → ${e.clock_out ? fmtTime(e.clock_out) : 'Ongoing'}</div>
+        </div>
+        <div class="entry-hrs">${e.hours_worked != null ? e.hours_worked.toFixed(2) + 'h' : '—'}</div>
+      </div>`).join('');
+    return `<div class="group-title">${name}</div><div style="border:1px solid var(--zinc-100);border-radius:12px;overflow:hidden;margin-bottom:16px;">${rows}</div>`;
+  }).join('');
+  document.getElementById('tsDetail').innerHTML = detHtml ? '<div class="group-title">Detail</div>' + detHtml : '';
+}
+
+/* Add Worker */
+function pickRole(el) {
+  el.parentElement.querySelectorAll('.toggle').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  selectedRole = el.dataset.role;
+}
+
+async function addWorker() {
+  const payload = {
+    name: document.getElementById('awName').value.trim(),
+    role: selectedRole,
+    pin: document.getElementById('awPin').value.trim(),
+    phone: document.getElementById('awPhone').value.trim() || undefined,
+    email: document.getElementById('awEmail').value.trim() || undefined,
+    hourly_rate: 0,
+  };
+  if (!payload.name) { alert('Name required'); return; }
+  if (!payload.pin || payload.pin.length < 4) { alert('PIN must be 4+ digits'); return; }
+  await api('/api/employees', {
+    method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload)
+  });
+  alert('Worker added');
+  document.getElementById('awName').value = '';
+  document.getElementById('awPin').value = '';
+  document.getElementById('awPhone').value = '';
+  document.getElementById('awEmail').value = '';
+  loadWorkers();
+}
+
+/* Upload Document */
+function pickDocType(el) {
+  el.parentElement.querySelectorAll('.toggle').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  selectedDocType = el.dataset.type;
+}
+
+async function loadWorkers() {
+  const workers = await api('/api/employees');
+  if (!workers) return;
+  const html = workers.map(w =>
+    `<div class="pill" data-id="${w.id}" onclick="selectWorker(this)">${w.name}</div>`
+  ).join('');
+  document.getElementById('udWorkers').innerHTML = html;
+}
+
+function selectWorker(el) {
+  document.querySelectorAll('#udWorkers .pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  selectedWorkerId = parseInt(el.dataset.id);
+}
+
+async function uploadDocument() {
+  if (!selectedWorkerId) { alert('Select a worker'); return; }
+  const payload = {
+    employee_id: selectedWorkerId,
+    type: selectedDocType,
+    title: document.getElementById('udTitle').value.trim(),
+    file_url: document.getElementById('udUrl').value.trim() || undefined,
+    period_start: document.getElementById('udPeriodStart').value ? new Date(document.getElementById('udPeriodStart').value).toISOString() : undefined,
+    period_end: document.getElementById('udPeriodEnd').value ? new Date(document.getElementById('udPeriodEnd').value).toISOString() : undefined,
+  };
+  if (!payload.title) { alert('Title required'); return; }
+  await api('/api/documents', {
+    method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload)
+  });
+  alert('Document uploaded');
+  document.getElementById('udTitle').value = '';
+  document.getElementById('udUrl').value = '';
+  document.getElementById('udPeriodStart').value = '';
+  document.getElementById('udPeriodEnd').value = '';
+}
+
+/* Init */
+setWeekRange();
+loadTimesheets();
+loadWorkers();
+</script>
+
+</body>
+</html>
